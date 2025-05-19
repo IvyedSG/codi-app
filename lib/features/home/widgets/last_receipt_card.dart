@@ -8,76 +8,100 @@ class LastReceiptCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      color: AppTheme.primaryGreen.withOpacity(0.2),
+      color: AppTheme.primaryGreen.withOpacity(0.1), // Color un poco más claro
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(30), // Bordes más redondeados
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(
+            horizontal: 24.0, vertical: 20.0), // Padding vertical reducido
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment:
+                  CrossAxisAlignment.center, // Centrado para mejor alineación
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      'Última Factura',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                // Título y subtítulo
+                Expanded(
+                  flex: 4, // Más espacio para el texto
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Última Factura',
+                        style: TextStyle(
+                          fontSize: 22, // Tamaño adecuado
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Supermercado Tottus',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black87,
+                      SizedBox(height: 4), // Menos espacio
+                      Text(
+                        'Supermercado Tottus',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                Image.asset(
-                  'assets/images/tottus_logo.png',
-                  width: 40,
-                  height: 40,
+
+                // Logo de Tottus
+                Expanded(
+                  flex: 3, // Menos espacio para el logo
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Image.asset(
+                      'assets/images/tottus_logo.png',
+                      width: 70, // Logo un poco más pequeño
+                      height: 70,
+                    ),
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24), // Espacio reducido entre secciones
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Valor de CO2 grande
                 const Text(
                   '10,5 Kg',
                   style: TextStyle(
-                    fontSize: 28,
+                    fontSize: 40, // Un poco más pequeño
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
                 // Ver detalles button
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                SizedBox(
+                  width: 130, // Botón ligeramente más estrecho
+                  height: 42, // Altura reducida
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      elevation: 0, // Sin sombra
+                      padding: EdgeInsets.zero,
                     ),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    minimumSize: const Size(40, 30),
-                  ),
-                  child: const Text(
-                    'Ver detalles',
-                    style: TextStyle(fontSize: 12),
+                    child: const Center(
+                      child: Text(
+                        'Ver detalles',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],
