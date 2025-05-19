@@ -1,32 +1,35 @@
 import 'package:flutter/material.dart';
 
-/// App theme configuration for Collect
+/// App theme configuration for Codi
 class AppTheme {
   // Private constructor to prevent instantiation
   AppTheme._();
 
-  // Brand colors
-  static const Color primaryGreen = Color(0xFF2E7D32);  // Deeper green
-  static const Color secondaryGreen = Color(0xFF66BB6A);  // Lighter green
-  static const Color accentColor = Color(0xFF4CAF50);  // Medium green
-  static const Color surfaceColor = Color(0xFFF5F9F5);  // Light green-tinted surface
-  
+  // Brand colors - Updated to match Figma design
+  static const Color primaryGreen = Color(0xFF9AE1B7); // Verde Primary
+  static const Color secondaryGreen = Color(0xFF1C6734); // Verde Secondary
+  static const Color accentColor =
+      Color(0xFF9AE1B7); // Using primaryGreen as accent
+  static const Color surfaceColor = Color(0xFFEEF6F6); // Fondo
+  static const Color backgroundDark = Color(0xFF282727); // Color Negro
+
   // Neutral colors
-  static const Color textDark = Color(0xFF212121);
+  static const Color textDark = Color(0xFF282727); // Using Negro for text
   static const Color textMedium = Color(0xFF757575);
   static const Color textLight = Color(0xFFBDBDBD);
   static const Color dividerColor = Color(0xFFE0E0E0);
-  
+
   // Semantic colors
-  static const Color successColor = Color(0xFF4CAF50);
-  static const Color warningColor = Color(0xFFFFC107);
-  static const Color errorColor = Color(0xFFE53935);
-  static const Color infoColor = Color(0xFF2196F3);
-  
+  static const Color successColor = Color(0xFF9AE1B7); // Using primaryGreen
+  static const Color warningColor =
+      Color(0xFFFFC107); // Keeping yellow for warning
+  static const Color errorColor = Color(0xFFE53935); // Keeping red for error
+  static const Color infoColor = Color(0xFF2196F3); // Keeping blue for info
+
   // Additional environmental colors for visualization
-  static const Color lowImpactColor = Color(0xFF8BC34A);
-  static const Color mediumImpactColor = Color(0xFFFFC107);
-  static const Color highImpactColor = Color(0xFFFF5722);
+  static const Color lowImpactColor = Color(0xFF9AE1B7); // Using primaryGreen
+  static const Color mediumImpactColor = Color(0xFFFFC107); // Keeping yellow
+  static const Color highImpactColor = Color(0xFFFF5722); // Keeping orange
 
   // Paddings
   static const double paddingSmall = 8.0;
@@ -39,7 +42,7 @@ class AppTheme {
   static const double borderRadiusMedium = 8.0;
   static const double borderRadiusLarge = 16.0;
   static const double borderRadiusExtraLarge = 24.0;
-  
+
   // Fonts
   static const String primaryFontFamily = 'Roboto';
   static const String secondaryFontFamily = 'Montserrat';
@@ -51,44 +54,45 @@ class AppTheme {
     colorScheme: ColorScheme.light(
       primary: primaryGreen,
       primaryContainer: primaryGreen.withOpacity(0.1),
-      onPrimary: Colors.white,
+      onPrimary: textDark, // Texto oscuro sobre verde claro
       secondary: secondaryGreen,
       secondaryContainer: secondaryGreen.withOpacity(0.1),
-      onSecondary: Colors.white,
+      onSecondary: Colors.white, // Texto blanco sobre verde oscuro
       surface: surfaceColor,
-      background: Colors.white,
+      background: surfaceColor, // Fondo principal #EEF6F6
       error: errorColor,
       onBackground: textDark,
       onSurface: textDark,
       onError: Colors.white,
     ),
-    
+
     // Card theme
     cardTheme: CardTheme(
       color: Colors.white,
-      elevation: 2,
+      elevation: 1, // Elevación sutil como en Figma
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadiusMedium),
       ),
     ),
-    
+
     // App bar theme
     appBarTheme: AppBarTheme(
-      backgroundColor: primaryGreen,
-      foregroundColor: Colors.white,
+      backgroundColor: surfaceColor, // Fondo claro #EEF6F6
+      foregroundColor: textDark,
       elevation: 0,
-      centerTitle: false,
+      centerTitle: true, // Títulos centrados como en Figma
       titleTextStyle: TextStyle(
         fontFamily: secondaryFontFamily,
         fontSize: 20,
         fontWeight: FontWeight.w600,
+        color: textDark,
       ),
     ),
-    
+
     // Button themes
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
+        foregroundColor: textDark, // Texto negro sobre botones verdes
         backgroundColor: primaryGreen,
         padding: const EdgeInsets.symmetric(
           horizontal: paddingLarge,
@@ -97,7 +101,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadiusMedium),
         ),
-        elevation: 2,
+        elevation: 0, // Sin sombra como en Figma
         textStyle: const TextStyle(
           fontFamily: primaryFontFamily,
           fontSize: 16,
@@ -106,11 +110,11 @@ class AppTheme {
         ),
       ),
     ),
-    
+
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        foregroundColor: primaryGreen,
-        side: const BorderSide(color: primaryGreen, width: 1.5),
+        foregroundColor: secondaryGreen,
+        side: const BorderSide(color: secondaryGreen, width: 1.5),
         padding: const EdgeInsets.symmetric(
           horizontal: paddingLarge,
           vertical: paddingMedium,
@@ -126,10 +130,10 @@ class AppTheme {
         ),
       ),
     ),
-    
+
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        foregroundColor: primaryGreen,
+        foregroundColor: secondaryGreen,
         textStyle: const TextStyle(
           fontFamily: primaryFontFamily,
           fontSize: 16,
@@ -138,16 +142,16 @@ class AppTheme {
         ),
       ),
     ),
-    
+
     // Floating action button theme
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: accentColor,
-      foregroundColor: Colors.white,
+      backgroundColor: primaryGreen,
+      foregroundColor: textDark, // Iconos oscuros sobre FAB verde
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadiusLarge),
       ),
     ),
-    
+
     // Input decoration theme
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -163,7 +167,7 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(borderRadiusMedium),
-        borderSide: BorderSide(color: primaryGreen, width: 2),
+        borderSide: BorderSide(color: secondaryGreen, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(borderRadiusMedium),
@@ -172,7 +176,7 @@ class AppTheme {
       labelStyle: TextStyle(color: textMedium),
       hintStyle: TextStyle(color: textLight),
     ),
-    
+
     // Text theme
     textTheme: const TextTheme(
       displayLarge: TextStyle(
@@ -249,12 +253,12 @@ class AppTheme {
         color: textDark,
       ),
     ),
-    
+
     // Tab bar theme
     tabBarTheme: TabBarTheme(
-      labelColor: primaryGreen,
+      labelColor: secondaryGreen,
       unselectedLabelColor: textMedium,
-      indicatorColor: primaryGreen,
+      indicatorColor: secondaryGreen,
       labelStyle: const TextStyle(
         fontFamily: primaryFontFamily,
         fontSize: 14,
@@ -266,19 +270,19 @@ class AppTheme {
         fontWeight: FontWeight.w500,
       ),
     ),
-    
+
     // Divider theme
     dividerTheme: DividerThemeData(
       color: dividerColor,
       thickness: 1,
       space: 1,
     ),
-    
+
     // Chip theme
     chipTheme: ChipThemeData(
       backgroundColor: surfaceColor,
       selectedColor: primaryGreen.withOpacity(0.2),
-      secondarySelectedColor: primaryGreen,
+      secondarySelectedColor: secondaryGreen,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       labelStyle: TextStyle(
         fontFamily: primaryFontFamily,
@@ -288,13 +292,13 @@ class AppTheme {
       secondaryLabelStyle: TextStyle(
         fontFamily: primaryFontFamily,
         fontSize: 14,
-        color: primaryGreen,
+        color: secondaryGreen,
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadiusMedium),
       ),
     ),
-    
+
     // Snackbar theme
     snackBarTheme: SnackBarThemeData(
       backgroundColor: textDark,
@@ -315,47 +319,48 @@ class AppTheme {
     useMaterial3: true,
     brightness: Brightness.dark,
     colorScheme: ColorScheme.dark(
-      primary: secondaryGreen,
-      primaryContainer: secondaryGreen.withOpacity(0.15),
-      onPrimary: Colors.black,
-      secondary: accentColor,
-      secondaryContainer: accentColor.withOpacity(0.15),
-      onSecondary: Colors.black,
-      surface: const Color(0xFF1E1E1E),
-      background: const Color(0xFF121212),
+      primary: primaryGreen,
+      primaryContainer: primaryGreen.withOpacity(0.15),
+      onPrimary: backgroundDark, // Texto oscuro sobre verde
+      secondary: secondaryGreen,
+      secondaryContainer: secondaryGreen.withOpacity(0.15),
+      onSecondary: Colors.white,
+      surface: backgroundDark,
+      background: backgroundDark, // Fondo principal #282727
       error: errorColor,
       onBackground: Colors.white,
       onSurface: Colors.white,
       onError: Colors.white,
     ),
-    
+
     // Card theme
     cardTheme: CardTheme(
-      color: const Color(0xFF2C2C2C),
-      elevation: 4,
+      color: Color(0xFF333333), // Un poco más claro que el fondo
+      elevation: 1,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadiusMedium),
       ),
     ),
-    
+
     // App bar theme
     appBarTheme: AppBarTheme(
-      backgroundColor: const Color(0xFF1E1E1E),
+      backgroundColor: backgroundDark,
       foregroundColor: Colors.white,
       elevation: 0,
-      centerTitle: false,
+      centerTitle: true,
       titleTextStyle: TextStyle(
         fontFamily: secondaryFontFamily,
         fontSize: 20,
         fontWeight: FontWeight.w600,
+        color: Colors.white,
       ),
     ),
-    
+
     // Button themes
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.black,
-        backgroundColor: secondaryGreen,
+        foregroundColor: textDark, // Texto oscuro sobre verde
+        backgroundColor: primaryGreen,
         padding: const EdgeInsets.symmetric(
           horizontal: paddingLarge,
           vertical: paddingMedium,
@@ -363,7 +368,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadiusMedium),
         ),
-        elevation: 2,
+        elevation: 0,
         textStyle: const TextStyle(
           fontFamily: primaryFontFamily,
           fontSize: 16,
@@ -372,11 +377,11 @@ class AppTheme {
         ),
       ),
     ),
-    
+
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        foregroundColor: secondaryGreen,
-        side: const BorderSide(color: secondaryGreen, width: 1.5),
+        foregroundColor: primaryGreen,
+        side: const BorderSide(color: primaryGreen, width: 1.5),
         padding: const EdgeInsets.symmetric(
           horizontal: paddingLarge,
           vertical: paddingMedium,
@@ -392,10 +397,10 @@ class AppTheme {
         ),
       ),
     ),
-    
+
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
-        foregroundColor: secondaryGreen,
+        foregroundColor: primaryGreen,
         textStyle: const TextStyle(
           fontFamily: primaryFontFamily,
           fontSize: 16,
@@ -404,20 +409,20 @@ class AppTheme {
         ),
       ),
     ),
-    
+
     // Floating action button theme
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: accentColor,
-      foregroundColor: Colors.black,
+      backgroundColor: primaryGreen,
+      foregroundColor: textDark, // Iconos oscuros sobre FAB verde
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadiusLarge),
       ),
     ),
-    
+
     // Input decoration theme
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: const Color(0xFF2C2C2C),
+      fillColor: Color(0xFF333333), // Un poco más claro que el fondo
       contentPadding: const EdgeInsets.all(paddingMedium),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(borderRadiusMedium),
@@ -429,7 +434,7 @@ class AppTheme {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(borderRadiusMedium),
-        borderSide: BorderSide(color: secondaryGreen, width: 2),
+        borderSide: BorderSide(color: primaryGreen, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(borderRadiusMedium),
@@ -438,7 +443,7 @@ class AppTheme {
       labelStyle: const TextStyle(color: Colors.white70),
       hintStyle: const TextStyle(color: Colors.white38),
     ),
-    
+
     // Text theme
     textTheme: const TextTheme(
       displayLarge: TextStyle(
@@ -515,12 +520,12 @@ class AppTheme {
         color: Colors.white,
       ),
     ),
-    
+
     // Tab bar theme
     tabBarTheme: TabBarTheme(
-      labelColor: secondaryGreen,
+      labelColor: primaryGreen,
       unselectedLabelColor: Colors.white70,
-      indicatorColor: secondaryGreen,
+      indicatorColor: primaryGreen,
       labelStyle: const TextStyle(
         fontFamily: primaryFontFamily,
         fontSize: 14,
@@ -532,19 +537,19 @@ class AppTheme {
         fontWeight: FontWeight.w500,
       ),
     ),
-    
+
     // Divider theme
     dividerTheme: const DividerThemeData(
       color: Color(0xFF424242),
       thickness: 1,
       space: 1,
     ),
-    
+
     // Chip theme
     chipTheme: ChipThemeData(
-      backgroundColor: const Color(0xFF2C2C2C),
-      selectedColor: secondaryGreen.withOpacity(0.3),
-      secondarySelectedColor: secondaryGreen,
+      backgroundColor: Color(0xFF333333),
+      selectedColor: primaryGreen.withOpacity(0.3),
+      secondarySelectedColor: primaryGreen,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       labelStyle: const TextStyle(
         fontFamily: primaryFontFamily,
@@ -554,16 +559,16 @@ class AppTheme {
       secondaryLabelStyle: TextStyle(
         fontFamily: primaryFontFamily,
         fontSize: 14,
-        color: secondaryGreen,
+        color: primaryGreen,
       ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadiusMedium),
       ),
     ),
-    
+
     // Snackbar theme
     snackBarTheme: SnackBarThemeData(
-      backgroundColor: const Color(0xFF333333),
+      backgroundColor: Color(0xFF333333),
       contentTextStyle: const TextStyle(
         fontFamily: primaryFontFamily,
         fontSize: 14,

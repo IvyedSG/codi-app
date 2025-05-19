@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       themeMode: ThemeMode.system,
-      routerConfig: appRouter,
+      routerConfig: AppRouter.router,
       debugShowCheckedModeBanner: false,
     );
   }

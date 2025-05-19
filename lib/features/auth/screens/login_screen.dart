@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_constants.dart';
+import '../../../core/theme/app_theme.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -28,13 +29,13 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         _isLoading = true;
       });
-      
+
       // Simulate login process
       Future.delayed(AppConstants.mediumAnimationDuration, () {
         setState(() {
           _isLoading = false;
         });
-        
+
         // Navigate to home screen after successful login
         if (mounted) {
           context.go('/home');
@@ -46,75 +47,111 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
+      backgroundColor: AppTheme.surfaceColor, // Fondo #EEF6F6
       body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: screenHeight -
+                  MediaQuery.of(context).padding.top -
+                  MediaQuery.of(context).padding.bottom,
+            ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment
+                  .start, // Cambio a start para mover todo arriba
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 40),
-                // App logo
-                Icon(
-                  Icons.nature,
-                  size: AppConstants.iconSizeExtraLarge * 1.6,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(height: 16),
-                // App name
-                Text(
-                  "CODI", // Changed from AppConstants.appName.toUpperCase()
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.displaySmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.primary,
+                SizedBox(
+                    height:
+                        screenHeight * 0.05), // 5% de la altura de la pantalla
+                // Logo - Más grande
+                Center(
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    height: 200, // Aumentado el tamaño
+                    width: 200, // Aumentado el tamaño
                   ),
                 ),
-                const SizedBox(height: 8),
-                // Tagline
-                Text(
-                  AppConstants.appTagline,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyLarge,
-                ),
-                const SizedBox(height: 48),
+                SizedBox(
+                    height:
+                        screenHeight * 0.03), // 3% de la altura de la pantalla
+
                 // Login form
                 Form(
                   key: _formKey,
                   child: Column(
                     children: [
+                      // Email field
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(
-                          labelText: 'Email',
-                          prefixIcon: Icon(Icons.email_outlined),
+                        style:
+                            TextStyle(fontSize: 16, color: AppTheme.textDark),
+                        decoration: InputDecoration(
+                          hintText: 'Correo@gmail.com',
+                          hintStyle: TextStyle(color: AppTheme.textMedium),
+                          prefixIcon: Icon(
+                            Icons.email_outlined,
+                            color: AppTheme.textDark,
+                            size: 22,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: EdgeInsets.symmetric(vertical: 14.0),
+                          suffixIcon: _emailController.text.isNotEmpty
+                              ? Icon(Icons.check_circle,
+                                  color: AppTheme.primaryGreen)
+                              : null,
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your email';
+                            return 'Por favor ingresa tu correo';
                           }
                           if (!value.contains('@')) {
-                            return 'Please enter a valid email';
+                            return 'Ingresa un correo válido';
                           }
                           return null;
                         },
+                        onChanged: (value) {
+                          setState(() {});
+                        },
                       ),
                       const SizedBox(height: 16),
+                      // Password field
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
+                        style:
+                            TextStyle(fontSize: 16, color: AppTheme.textDark),
                         decoration: InputDecoration(
-                          labelText: 'Password',
-                          prefixIcon: const Icon(Icons.lock_outline),
+                          hintText: 'Contraseña',
+                          hintStyle: TextStyle(color: AppTheme.textMedium),
+                          prefixIcon: Icon(
+                            Icons.lock_outline,
+                            color: AppTheme.textDark,
+                            size: 22,
+                          ),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: EdgeInsets.symmetric(vertical: 14.0),
                           suffixIcon: IconButton(
                             icon: Icon(
-                              _obscurePassword 
-                                ? Icons.visibility_outlined 
-                                : Icons.visibility_off_outlined,
+                              _obscurePassword
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                              color: AppTheme.textMedium,
                             ),
                             onPressed: () {
                               setState(() {
@@ -125,48 +162,91 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter your password';
-                          }
-                          if (value.length < 6) {
-                            return 'Password must be at least 6 characters';
+                            return 'Por favor ingresa tu contraseña';
                           }
                           return null;
                         },
                       ),
                       const SizedBox(height: 8),
+                      // Forgot password
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size(10, 10),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
                           onPressed: () {
-                            // TODO: Navigate to forgot password screen
+                            // Navegar a recuperar contraseña
                           },
-                          child: const Text('Forgot Password?'),
+                          child: Text(
+                            'Recuperar contraseña?',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppTheme.textDark,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 24),
+                      // Login button
                       SizedBox(
                         width: double.infinity,
-                        height: 50,
+                        height: 48,
                         child: ElevatedButton(
                           onPressed: _isLoading ? null : _login,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.backgroundDark,
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
                           child: _isLoading
-                              ? const CircularProgressIndicator()
-                              : const Text('LOGIN'),
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white),
+                                  ),
+                                )
+                              : Text('Ingresar'),
                         ),
                       ),
                       const SizedBox(height: 24),
+                      // Register option
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Don't have an account?",
-                            style: theme.textTheme.bodyMedium,
+                            "Todavía no tienes una cuenta?",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppTheme.textDark,
+                            ),
                           ),
                           TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.only(left: 4),
+                              minimumSize: Size(10, 10),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
                             onPressed: () {
-                              // TODO: Navigate to register screen
+                              // Navegar a registro
+                              context.go('/register');
                             },
-                            child: const Text('Sign Up'),
+                            child: Text(
+                              'Crear Cuenta',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: AppTheme.secondaryGreen,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ],
                       ),
