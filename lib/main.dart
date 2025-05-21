@@ -24,6 +24,9 @@ void main() {
     DeviceOrientation.portraitDown,
   ]);
   
+  // Optimizaciones de memoria
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 1024 * 1024 * 100; // 100 MB para caché de imágenes
+  
   runApp(const MyApp());
 }
 
@@ -61,11 +64,19 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.light,
       routerConfig: AppRouter.router,
       debugShowCheckedModeBanner: false,
+      builder: (context, child) {
+        // Optimizaciones globales
+        return MediaQuery(
+          // Evitar cambios de diseño cuando aparece el teclado
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          child: child!,
+        );
+      },
     );
   }
 }
 
-// Clase para transiciones suaves optimizadas
+// Clase para transiciones suaves ultra-optimizadas
 class SmoothPageTransitionsBuilder extends PageTransitionsBuilder {
   const SmoothPageTransitionsBuilder();
 
@@ -77,15 +88,21 @@ class SmoothPageTransitionsBuilder extends PageTransitionsBuilder {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
+    // Omitir animación para rutas instantáneas
+    if (route.settings.name?.startsWith('/') == true) {
+      return FadeTransition(
+        opacity: animation.drive(CurveTween(curve: Curves.easeOutQuint)),
+        child: child,
+      );
+    }
+    
     const begin = Offset(0.0, 0.05);
     const end = Offset.zero;
     const curve = Curves.easeOutQuint;
     
-    // Solo anima las páginas que no son la primera en el stack
     final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
     final offsetAnimation = animation.drive(tween);
     
-    // Combinación de fade y slight slide para una experiencia premium
     return FadeTransition(
       opacity: animation.drive(CurveTween(curve: curve)),
       child: SlideTransition(

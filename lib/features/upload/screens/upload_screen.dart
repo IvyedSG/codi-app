@@ -275,6 +275,59 @@ class UploadScreen extends StatelessWidget {
                 ],
               ),
             ),
+            
+            const SizedBox(height: 24),
+            
+            // Requisitos para Recibo Verde
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF9AE1B7).withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: const Color(0xFF1C6734).withOpacity(0.2),
+                  width: 1,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Row(
+                    children: [
+                      Icon(
+                        Icons.eco_outlined,
+                        size: 18,
+                        color: Color(0xFF1C6734),
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        'Estándares para Recibo Verde',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  _buildStandardItem(
+                    'Más del 50% de productos eco-amigables',
+                    Icons.check_circle_outline,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildStandardItem(
+                    'Presencia de bolsas reutilizables',
+                    Icons.check_circle_outline,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildStandardItem(
+                    'Productos de temporada local',
+                    Icons.check_circle_outline,
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -310,6 +363,30 @@ class UploadScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               color: Colors.black.withOpacity(0.7),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Widget para crear elementos de estándar con iconos
+  Widget _buildStandardItem(String text, IconData icon) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          icon,
+          size: 18,
+          color: const Color(0xFF1C6734),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.black.withOpacity(0.8),
             ),
           ),
         ),

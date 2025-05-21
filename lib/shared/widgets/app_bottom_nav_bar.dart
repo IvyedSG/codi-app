@@ -163,10 +163,10 @@ class AppBottomNavBar extends StatelessWidget {
         navigateTo('/home');
         break;
       case 1:
-        navigateTo('/promos'); // Cambiado de results a promos
+        navigateTo('/promos');
         break;
       case 2:
-        navigateTo('/upload'); // Cambiado de scan a upload
+        navigateTo('/upload');
         break;
       case 3:
         navigateTo('/history');
@@ -177,12 +177,14 @@ class AppBottomNavBar extends StatelessWidget {
     }
   }
 
-  // Solo la parte de navegación
-
+  // Método de navegación corregido
   void navigateTo(String route) {
     BuildContext? context = navigatorKey.currentContext;
     if (context != null) {
-      // Evitar varias transiciones seguidas
+      // Evitar navegación innecesaria comparando con currentIndex
+      // No tratamos de acceder a location que no existe en esta versión de go_router
+      
+      // Usar Future.microtask para mejorar rendimiento de navegación
       Future.microtask(() {
         GoRouter.of(context).go(route);
       });

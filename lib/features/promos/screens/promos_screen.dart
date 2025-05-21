@@ -171,14 +171,14 @@ class PromosScreen extends StatelessWidget {
   // Banner principal corregido para mostrar completamente el botón
   Widget _buildMainPromoBanner() {
     return Container(
-      height: 200, // Aumentada la altura para dar más espacio al botón
+      height: 200,
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            const Color(0xFF9AE1B7), // Color #9AE1B7
+            const Color(0xFF9AE1B7),
             const Color(0xFF9AE1B7).withOpacity(0.8),
             const Color(0xFF9AE1B7).withOpacity(0.6),
           ],
@@ -223,7 +223,7 @@ class PromosScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    '¡Nuevos descuentos!',
+                    '¡Nuevas promociones!',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -232,24 +232,24 @@ class PromosScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'Obtén beneficios por tus compras ecológicas',
+                    'Exclusivas para compras con recibos verdes',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.black87,
                     ),
                   ),
-                  const SizedBox(height: 20), // Más espacio antes del botón
+                  const SizedBox(height: 20),
                   Container(
                     width: 140,
-                    height: 44, // Altura aumentada para mejor visualización
-                    margin: const EdgeInsets.only(bottom: 4), // Margen inferior para evitar cortes
+                    height: 44,
+                    margin: const EdgeInsets.only(bottom: 4),
                     child: ElevatedButton(
                       onPressed: () {},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(22), // Bordes más redondeados
+                          borderRadius: BorderRadius.circular(22),
                         ),
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),

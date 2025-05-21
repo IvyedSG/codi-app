@@ -210,7 +210,7 @@ class ProfileScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Resumen de Huella de Carbono',
+              'Resumen de Impacto Ambiental',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -232,9 +232,9 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 _buildCarbonStat(
                   icon: Icons.eco_outlined,
-                  value: '21.3',
-                  unit: 'Kg CO₂',
-                  label: 'Total ahorrado',
+                  value: '7',
+                  unit: 'recibos',
+                  label: 'Recibos Verdes',
                   isHighlighted: true,
                 ),
                 _buildCarbonStat(
@@ -248,7 +248,7 @@ class ProfileScreen extends StatelessWidget {
             
             const SizedBox(height: 20),
             
-            // Barra de progreso
+            // Porcentaje de recibos verdes
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -256,7 +256,7 @@ class ProfileScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text(
-                      'Progreso hacia objetivo mensual',
+                      'Recibos verdes vs. regulares',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -264,7 +264,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '68%',
+                      '58%',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -277,7 +277,7 @@ class ProfileScreen extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(4),
                   child: LinearProgressIndicator(
-                    value: 0.68,
+                    value: 0.58,
                     backgroundColor: const Color(0xFF9AE1B7).withOpacity(0.2),
                     valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF9AE1B7)),
                     minHeight: 8,

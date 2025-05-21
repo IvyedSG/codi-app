@@ -14,7 +14,7 @@ class HistoryScreen extends StatelessWidget {
         'date': '15 May 2025',
         'store': 'Tottus',
         'co2': 8.2,
-        'points': 45,
+        'isGreen': true,  // Antes era 'points'
         'items': 12,
         'hasPromo': true,
       },
@@ -22,7 +22,7 @@ class HistoryScreen extends StatelessWidget {
         'date': '10 May 2025',
         'store': 'Plaza Vea',
         'co2': 15.7,
-        'points': 32,
+        'isGreen': false,  // Antes era 'points'
         'items': 8,
         'hasPromo': false,
       },
@@ -30,7 +30,7 @@ class HistoryScreen extends StatelessWidget {
         'date': '02 May 2025',
         'store': 'Metro',
         'co2': 5.3,
-        'points': 60,
+        'isGreen': true,  // Antes era 'points'
         'items': 15,
         'hasPromo': true,
       },
@@ -38,7 +38,7 @@ class HistoryScreen extends StatelessWidget {
         'date': '28 Abr 2025',
         'store': 'Tottus',
         'co2': 12.8,
-        'points': 35,
+        'isGreen': false,  // Antes era 'points'
         'items': 10,
         'hasPromo': false,
       },
@@ -117,7 +117,7 @@ class HistoryScreen extends StatelessWidget {
                           date: item['date'],
                           store: item['store'],
                           co2: item['co2'],
-                          points: item['points'],
+                          isGreen: item['isGreen'], // Cambiado de 'points'
                           items: item['items'],
                           hasPromo: item['hasPromo'],
                         ),
@@ -170,8 +170,8 @@ class HistoryScreen extends StatelessWidget {
                   icon: Icons.shopping_cart_outlined,
                 ),
                 _buildActivityStat(
-                  value: '172',
-                  label: 'CarboPuntos',
+                  value: '2',
+                  label: 'Recibos Verdes',
                   icon: Icons.eco_outlined,
                 ),
                 _buildActivityStat(
@@ -281,7 +281,7 @@ class HistoryScreen extends StatelessWidget {
     required String date,
     required String store,
     required double co2,
-    required int points,
+    required bool isGreen, // Cambiado de 'points'
     required int items,
     required bool hasPromo,
   }) {
@@ -386,10 +386,10 @@ class HistoryScreen extends StatelessWidget {
                   icon: Icons.cloud_outlined,
                 ),
                 _buildPurchaseStat(
-                  label: 'CarboPuntos',
-                  value: '+$points pts',
-                  icon: Icons.eco_outlined,
-                  isHighlighted: true,
+                  label: 'Estado',
+                  value: isGreen ? 'Verde' : 'Regular',
+                  icon: isGreen ? Icons.eco_outlined : Icons.receipt_outlined,
+                  isHighlighted: isGreen,
                 ),
                 _buildPurchaseStat(
                   label: 'Productos',

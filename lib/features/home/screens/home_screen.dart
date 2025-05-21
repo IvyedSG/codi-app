@@ -6,6 +6,7 @@ import '../widgets/co2_card.dart';
 import '../widgets/last_receipt_card.dart';
 import '../widgets/offer_card.dart';
 import '../widgets/upload_receipt_card.dart';
+import '../widgets/green_receipts_card.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -38,12 +39,12 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // Dual card row (CarboPuntos y CO2 acumulado)
+              // Dual card row (Recibos Verdes y CO2 acumulado)
               const Row(
                 children: [
-                  // CarboPuntos Card
+                  // Recibos Verdes Card (componente actualizado)
                   Expanded(
-                    child: CarboPointsCard(),
+                    child: GreenReceiptsCard(),
                   ),
                   SizedBox(width: 10),
                   // CO2 Acumulado Card
