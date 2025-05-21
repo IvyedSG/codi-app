@@ -13,9 +13,9 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFEEF6F6), // Color #EEF6F6
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFEEF6F6), // Color #EEF6F6
         elevation: 0,
         title: const Text(
           'Inicio',

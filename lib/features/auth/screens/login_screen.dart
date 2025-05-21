@@ -61,24 +61,22 @@ class _LoginScreenState extends State<LoginScreen> {
                   MediaQuery.of(context).padding.bottom,
             ),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment
-                  .start, // Cambio a start para mover todo arriba
+              mainAxisAlignment: MainAxisAlignment.center, // Centrar verticalmente
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(
-                    height:
-                        screenHeight * 0.05), // 5% de la altura de la pantalla
-                // Logo - Más grande
-                Center(
-                  child: Image.asset(
-                    'assets/images/logo.png',
-                    height: 200, // Aumentado el tamaño
-                    width: 200, // Aumentado el tamaño
+                // Logo con un padding top para separarlo del tope
+                Padding(
+                  padding: EdgeInsets.only(top: screenHeight * 0.02),
+                  child: Center(
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      height: 180,
+                      width: 180,
+                    ),
                   ),
                 ),
-                SizedBox(
-                    height:
-                        screenHeight * 0.03), // 3% de la altura de la pantalla
+                
+                const SizedBox(height: 32),
 
                 // Login form
                 Form(
@@ -89,10 +87,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        style:
-                            TextStyle(fontSize: 16, color: AppTheme.textDark),
+                        style: TextStyle(fontSize: 16, color: AppTheme.textDark),
                         decoration: InputDecoration(
-                          hintText: 'Correo@gmail.com',
+                          hintText: 'correo@gmail.com',
                           hintStyle: TextStyle(color: AppTheme.textMedium),
                           prefixIcon: Icon(
                             Icons.email_outlined,
@@ -105,10 +102,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: EdgeInsets.symmetric(vertical: 14.0),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 14.0),
                           suffixIcon: _emailController.text.isNotEmpty
-                              ? Icon(Icons.check_circle,
-                                  color: AppTheme.primaryGreen)
+                              ? Icon(Icons.check_circle, color: AppTheme.primaryGreen)
                               : null,
                         ),
                         validator: (value) {
@@ -129,10 +125,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscurePassword,
-                        style:
-                            TextStyle(fontSize: 16, color: AppTheme.textDark),
+                        style: TextStyle(fontSize: 16, color: AppTheme.textDark),
                         decoration: InputDecoration(
-                          hintText: 'Contraseña',
+                          hintText: 'contraseña',
                           hintStyle: TextStyle(color: AppTheme.textMedium),
                           prefixIcon: Icon(
                             Icons.lock_outline,
@@ -145,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(8),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding: EdgeInsets.symmetric(vertical: 14.0),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 14.0),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscurePassword
@@ -174,14 +169,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: TextButton(
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
-                            minimumSize: Size(10, 10),
+                            minimumSize: const Size(10, 10),
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
                           onPressed: () {
                             // Navegar a recuperar contraseña
                           },
                           child: Text(
-                            'Recuperar contraseña?',
+                            '¿Recuperar contraseña?',
                             style: TextStyle(
                               fontSize: 14,
                               color: AppTheme.textDark,
@@ -190,31 +185,37 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      // Login button
+                      // Login button - Aumentado el tamaño vertical para evitar cortes
                       SizedBox(
                         width: double.infinity,
-                        height: 48,
+                        height: 52, // Altura aumentada para mejor visibilidad
                         child: ElevatedButton(
                           onPressed: _isLoading ? null : _login,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.backgroundDark,
                             foregroundColor: Colors.white,
                             elevation: 0,
+                            padding: const EdgeInsets.symmetric(vertical: 12), // Padding vertical adecuado
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                           child: _isLoading
-                              ? SizedBox(
-                                  height: 20,
-                                  width: 20,
+                              ? const SizedBox(
+                                  height: 24,
+                                  width: 24,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white),
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                   ),
                                 )
-                              : Text('Ingresar'),
+                              : const Text(
+                                  'Ingresar',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -223,7 +224,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Todavía no tienes una cuenta?",
+                            "¿Todavía no tienes una cuenta?",
                             style: TextStyle(
                               fontSize: 14,
                               color: AppTheme.textDark,
@@ -231,8 +232,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           TextButton(
                             style: TextButton.styleFrom(
-                              padding: EdgeInsets.only(left: 4),
-                              minimumSize: Size(10, 10),
+                              padding: const EdgeInsets.only(left: 4),
+                              minimumSize: const Size(10, 10),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
                             onPressed: () {
@@ -250,6 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 24), // Espacio adicional al final
                     ],
                   ),
                 ),

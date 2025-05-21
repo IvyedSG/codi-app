@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_theme.dart';
 
 class LastReceiptCard extends StatelessWidget {
   const LastReceiptCard({super.key});
@@ -8,7 +7,7 @@ class LastReceiptCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      color: AppTheme.primaryGreen.withOpacity(0.1), // Color un poco más claro
+      color: const Color(0xFF9AE1B7), // Color #9AE1B7 completo para la tarjeta principal
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30), // Bordes más redondeados
       ),

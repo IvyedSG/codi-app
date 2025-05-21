@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/theme/app_theme.dart';
 
 class UploadReceiptCard extends StatelessWidget {
   const UploadReceiptCard({super.key});
@@ -13,8 +12,7 @@ class UploadReceiptCard extends StatelessWidget {
     return Card(
       elevation: 0,
       margin: EdgeInsets.zero, // Eliminar margen por defecto del Card
-      color: AppTheme.primaryGreen
-          .withOpacity(0.1), // Color más claro como en la imagen
+      color: const Color(0xFF9AE1B7), // Color #9AE1B7 completo
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24), // Bordes más redondeados
       ),
@@ -42,7 +40,7 @@ class UploadReceiptCard extends StatelessWidget {
               width: 80, // Más grande
               height: 80, // Más grande
               decoration: BoxDecoration(
-                color: AppTheme.primaryGreen.withOpacity(0.2),
+                color: Colors.white.withOpacity(0.6), // Fondo más claro para contraste
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(
                     16), // Bordes redondeados del contenedor
@@ -64,7 +62,7 @@ class UploadReceiptCard extends StatelessWidget {
               height: 48, // Altura mayor
               child: ElevatedButton(
                 onPressed: () {
-                  context.go('/scan');
+                  context.go('/upload'); // Cambiado de /scan a /upload
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,

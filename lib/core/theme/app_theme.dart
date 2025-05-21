@@ -67,7 +67,7 @@ class AppTheme {
     ),
 
     // Card theme
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: Colors.white,
       elevation: 1, // Elevación sutil como en Figma
       shape: RoundedRectangleBorder(
@@ -255,7 +255,7 @@ class AppTheme {
     ),
 
     // Tab bar theme
-    tabBarTheme: TabBarTheme(
+    tabBarTheme: TabBarThemeData(
       labelColor: secondaryGreen,
       unselectedLabelColor: textMedium,
       indicatorColor: secondaryGreen,
@@ -334,8 +334,8 @@ class AppTheme {
     ),
 
     // Card theme
-    cardTheme: CardTheme(
-      color: Color(0xFF333333), // Un poco más claro que el fondo
+    cardTheme: CardThemeData(
+      color: const Color(0xFF333333), // Un poco más claro que el fondo
       elevation: 1,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadiusMedium),
@@ -522,7 +522,7 @@ class AppTheme {
     ),
 
     // Tab bar theme
-    tabBarTheme: TabBarTheme(
+    tabBarTheme: TabBarThemeData(
       labelColor: primaryGreen,
       unselectedLabelColor: Colors.white70,
       indicatorColor: primaryGreen,

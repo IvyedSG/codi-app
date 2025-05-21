@@ -1,7 +1,5 @@
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../core/theme/app_theme.dart';
 
 class AppBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -11,84 +9,183 @@ class AppBottomNavBar extends StatelessWidget {
     required this.currentIndex,
   });
 
+  // Llave de navegación global para acceder al contexto
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDarkMode = theme.brightness == Brightness.dark;
+    // Colores para la barra de navegación
+    final activeColor = const Color(0xFF9AE1B7); // Color exacto #9AE1B7 para activo
+    final inactiveColor = Colors.black; // Color negro para inactivo
+    final backgroundColor = Colors.white; // Fondo blanco
 
-    // Colores para la barra de navegación - más planos y simples
-    final activeColor = AppTheme.primaryGreen; // Color activo - verde primario
-    final backgroundColor = Colors.white; // Fondo siempre blanco
-    final inactiveColor = Colors.black54; // Color inactivo
+    return Container(
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      height: 70, // Altura para textos
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          // Home - Icono casa
+          _buildNavItem(
+            icon: Icons.home_rounded,
+            index: 0,
+            activeColor: activeColor,
+            inactiveColor: inactiveColor,
+            label: 'Inicio',
+          ),
 
-    return ConvexAppBar(
-      backgroundColor: backgroundColor,
-      activeColor: activeColor,
-      color: inactiveColor,
-      items: [
-        // Home - Icono casa
-        const TabItem(icon: Icons.home_rounded, title: 'Inicio'),
+          // Promociones - Icono de porcentaje/descuentos
+          _buildNavItem(
+            icon: Icons.percent_rounded,
+            index: 1,
+            activeColor: activeColor,
+            inactiveColor: inactiveColor,
+            label: 'Promos',
+          ),
 
-        // Results - Icono de estadísticas
-        const TabItem(icon: Icons.insights_rounded, title: 'Promociones'),
+          // Subir - Icono de cámara
+          _buildNavItem(
+            icon: Icons.camera_alt_rounded,
+            index: 2,
+            activeColor: activeColor,
+            inactiveColor: inactiveColor,
+            label: 'Subir',
+          ),
 
-        // Scan - Icono de cámara
-        const TabItem(icon: Icons.camera_alt_rounded, title: 'Escanear'),
+          // History - Icono de historial
+          _buildNavItem(
+            icon: Icons.receipt_long_rounded,
+            index: 3,
+            activeColor: activeColor,
+            inactiveColor: inactiveColor,
+            label: 'Historial',
+          ),
 
-        // History - Icono de historial
-        const TabItem(icon: Icons.history_rounded, title: 'Historial'),
-
-        // Profile - Imagen circular en lugar de icono
-        TabItem(
-          icon: _buildProfileIcon(),
-          title: 'Perfil',
-        ),
-      ],
-      initialActiveIndex: currentIndex,
-      onTap: (index) => _onItemTapped(context, index),
-      style: TabStyle.fixedCircle, // Estilo con círculo para el icono central
-      height: 60,
-      cornerRadius: 0, // Sin esquinas redondeadas
-      elevation: 2, // Sombra ligera
-      top: -15, // Ajusta la posición del icono central
-      curveSize: 70, // Tamaño de curva reducido
+          // Profile - Icono de perfil
+          _buildNavItem(
+            icon: Icons.person_rounded,
+            index: 4,
+            activeColor: activeColor,
+            inactiveColor: inactiveColor,
+            isProfileImage: true,
+            label: 'Perfil',
+          ),
+        ],
+      ),
     );
   }
 
-  // Widget para construir el icono de perfil con imagen circular
-  Widget _buildProfileIcon() {
-    return Container(
-      width: 28,
-      height: 28,
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-        image: DecorationImage(
-          image: AssetImage('assets/images/foto.jpg'), // Ruta a tu imagen
-          fit: BoxFit.cover,
+  Widget _buildNavItem({
+    required IconData icon,
+    required int index,
+    required Color activeColor,
+    required Color inactiveColor,
+    required String label,
+    bool isProfileImage = false,
+  }) {
+    final isSelected = currentIndex == index;
+    final color = isSelected ? activeColor : inactiveColor;
+
+    // Tamaños consistentes para todos los elementos
+    const double iconSize = 24.0;       // Tamaño exacto para todos los iconos
+    const double containerSize = 32.0;  // Tamaño exacto para todos los contenedores
+    const double fontSize = 10.0;       // Tamaño exacto para todos los textos
+    const double spacing = 2.0;         // Espaciado entre icono y texto
+
+    return Expanded(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _onItemTapped(index),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Si es el icono de perfil, mostramos la imagen con borde del color activo
+              if (isProfileImage)
+                Container(
+                  width: containerSize,
+                  height: containerSize,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: isSelected 
+                      ? Border.all(color: activeColor, width: 2)
+                      : null,
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/foto.jpg'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                )
+              else
+                Container(
+                  height: containerSize,
+                  width: containerSize,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isSelected ? activeColor.withOpacity(0.2) : Colors.transparent,
+                  ),
+                  child: Icon(
+                    icon,
+                    color: color,
+                    size: iconSize,
+                  ),
+                ),
+              SizedBox(height: spacing),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: fontSize,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void _onItemTapped(BuildContext context, int index) {
+  void _onItemTapped(int index) {
     if (currentIndex == index) return;
 
     switch (index) {
       case 0:
-        context.go('/home');
+        navigateTo('/home');
         break;
       case 1:
-        context.go('/results');
+        navigateTo('/promos'); // Cambiado de results a promos
         break;
       case 2:
-        context.go('/scan');
+        navigateTo('/upload'); // Cambiado de scan a upload
         break;
       case 3:
-        context.go('/history');
+        navigateTo('/history');
         break;
       case 4:
-        context.go('/profile');
+        navigateTo('/profile');
         break;
+    }
+  }
+
+  // Solo la parte de navegación
+
+  void navigateTo(String route) {
+    BuildContext? context = navigatorKey.currentContext;
+    if (context != null) {
+      // Evitar varias transiciones seguidas
+      Future.microtask(() {
+        GoRouter.of(context).go(route);
+      });
     }
   }
 }

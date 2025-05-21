@@ -1,135 +1,416 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/app_bottom_nav_bar.dart';
+import '../../../shared/widgets/animated_page_transition.dart';
+import '../../../core/theme/app_theme.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    
     return Scaffold(
+      backgroundColor: const Color(0xFFEEF6F6), // Color #EEF6F6 consistente
       appBar: AppBar(
-        title: const Text('Profile'),
+        backgroundColor: const Color(0xFFEEF6F6),
+        elevation: 0,
+        title: const Text(
+          'Perfil',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings_outlined),
+            icon: const Icon(Icons.settings_outlined, color: Colors.black),
             onPressed: () {
-              // TODO: Navigate to settings
+              // Navegar a configuración
             },
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Column(
+      body: AnimatedPageTransition(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Tarjeta de información del usuario
+              _buildUserInfoCard(),
+              
+              const SizedBox(height: 24),
+              
+              // Tarjeta de estadísticas de carbono
+              _buildCarbonStatsCard(),
+              
+              const SizedBox(height: 24),
+              
+              // Sección de premios y logros
+              const Text(
+                'Logros',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              
+              const SizedBox(height: 16),
+              
+              // Tarjeta de logros
+              _buildAchievementsCard(),
+              
+              const SizedBox(height: 24),
+              
+              // Opciones de perfil
+              const Text(
+                'Configuración',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              
+              const SizedBox(height: 16),
+              
+              // Tarjeta de opciones
+              _buildOptionsCard(context),
+              
+              // Espacio adicional al final
+              const SizedBox(height: 28),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: const AppBottomNavBar(currentIndex: 4),
+    );
+  }
+
+  Widget _buildUserInfoCard() {
+    return Card(
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Row(
           children: [
-            // Profile header
-            Center(
+            // Foto de perfil
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: const Color(0xFF9AE1B7),
+                  width: 3,
+                ),
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/foto.jpg'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(width: 20),
+            // Información del usuario
+            Expanded(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundColor: theme.colorScheme.primary.withOpacity(0.2),
-                    child: Icon(
-                      Icons.person,
-                      size: 60,
-                      color: theme.colorScheme.primary,
+                  const Text(
+                    'Juan Pérez',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'User Name',
-                    style: theme.textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'user@example.com',
-                    style: theme.textTheme.bodyLarge,
+                    'juan.perez@gmail.com',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black.withOpacity(0.7),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10, 
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF9AE1B7).withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.eco_outlined,
+                          size: 14,
+                          color: Color(0xFF1C6734),
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          'Usuario Eco',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF1C6734),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 32),
+            // Botón de editar
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: const Color(0xFF9AE1B7).withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: const Icon(
+                  Icons.edit_outlined,
+                  size: 20,
+                  color: Color(0xFF1C6734),
+                ),
+                onPressed: () {
+                  // Editar perfil
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCarbonStatsCard() {
+    return Card(
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Resumen de Huella de Carbono',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
             
-            // Carbon stats
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(height: 20),
+            
+            // Estadísticas con íconos y valores
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildCarbonStat(
+                  icon: Icons.cloud_outlined,
+                  value: '45.8',
+                  unit: 'Kg CO₂',
+                  label: 'Total emitido',
+                ),
+                _buildCarbonStat(
+                  icon: Icons.eco_outlined,
+                  value: '21.3',
+                  unit: 'Kg CO₂',
+                  label: 'Total ahorrado',
+                  isHighlighted: true,
+                ),
+                _buildCarbonStat(
+                  icon: Icons.receipt_long_rounded,
+                  value: '12',
+                  unit: 'escaneos',
+                  label: 'Este mes',
+                ),
+              ],
+            ),
+            
+            const SizedBox(height: 20),
+            
+            // Barra de progreso
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    const Text(
+                      'Progreso hacia objetivo mensual',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                      ),
+                    ),
                     Text(
-                      'Carbon Footprint Summary',
-                      style: theme.textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 16),
-                    _buildStatRow(
-                      context,
-                      'Total CO₂ Emissions',
-                      '0 kg',
-                      Icons.cloud_outlined,
-                    ),
-                    _buildStatRow(
-                      context,
-                      'Scans This Month',
-                      '0',
-                      Icons.receipt_outlined,
-                    ),
-                    _buildStatRow(
-                      context,
-                      'Carbon Saved',
-                      '0 kg',
-                      Icons.eco_outlined,
+                      '68%',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1C6734),
+                      ),
                     ),
                   ],
                 ),
-              ),
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(4),
+                  child: LinearProgressIndicator(
+                    value: 0.68,
+                    backgroundColor: const Color(0xFF9AE1B7).withOpacity(0.2),
+                    valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF9AE1B7)),
+                    minHeight: 8,
+                  ),
+                ),
+              ],
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCarbonStat({
+    required IconData icon,
+    required String value,
+    required String unit,
+    required String label,
+    bool isHighlighted = false,
+  }) {
+    final color = isHighlighted ? const Color(0xFF1C6734) : Colors.black;
+    
+    return Column(
+      children: [
+        Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            color: const Color(0xFF9AE1B7).withOpacity(0.2),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            icon,
+            color: const Color(0xFF1C6734),
+            size: 24,
+          ),
+        ),
+        const SizedBox(height: 8),
+        RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: value,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: color,
+                ),
+              ),
+              TextSpan(
+                text: '\n$unit',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.black.withOpacity(0.7),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.black.withOpacity(0.7),
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAchievementsCard() {
+    return Card(
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Mis logros',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                Text(
+                  'Ver todos',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xFF1C6734),
+                  ),
+                ),
+              ],
+            ),
+            
             const SizedBox(height: 16),
             
-            // Profile options
-            Card(
-              child: Column(
+            // Lista horizontal de logros
+            SizedBox(
+              height: 110,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
                 children: [
-                  _buildProfileOption(
-                    context,
-                    'Edit Profile',
-                    Icons.edit_outlined,
-                    onTap: () {},
+                  _buildAchievementItem(
+                    icon: Icons.eco_outlined,
+                    title: 'Eco-Novato',
+                    description: 'Primer mes usando la app',
+                    isCompleted: true,
                   ),
-                  const Divider(height: 1),
-                  _buildProfileOption(
-                    context,
-                    'Notification Settings',
-                    Icons.notifications_outlined,
-                    onTap: () {},
+                  const SizedBox(width: 12),
+                  _buildAchievementItem(
+                    icon: Icons.receipt_long_rounded,
+                    title: 'Scanner Pro',
+                    description: '10 facturas escaneadas',
+                    isCompleted: true,
                   ),
-                  const Divider(height: 1),
-                  _buildProfileOption(
-                    context,
-                    'Privacy Settings',
-                    Icons.security_outlined,
-                    onTap: () {},
-                  ),
-                  const Divider(height: 1),
-                  _buildProfileOption(
-                    context,
-                    'Help & Support',
-                    Icons.help_outline,
-                    onTap: () {},
-                  ),
-                  const Divider(height: 1),
-                  _buildProfileOption(
-                    context,
-                    'Log Out',
-                    Icons.logout,
-                    textColor: theme.colorScheme.error,
-                    iconColor: theme.colorScheme.error,
-                    onTap: () {
-                      context.go('/login');
-                    },
+                  const SizedBox(width: 12),
+                  _buildAchievementItem(
+                    icon: Icons.shopping_bag_outlined,
+                    title: 'Comprador Verde',
+                    description: '5 compras eco-amigables',
+                    isCompleted: false,
                   ),
                 ],
               ),
@@ -137,66 +418,147 @@ class ProfileScreen extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: const AppBottomNavBar(currentIndex: 4),
     );
   }
 
-  Widget _buildStatRow(
-    BuildContext context,
-    String label,
-    String value,
-    IconData icon,
-  ) {
-    final theme = Theme.of(context);
-    
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
+  Widget _buildAchievementItem({
+    required IconData icon,
+    required String title,
+    required String description,
+    required bool isCompleted,
+  }) {
+    return Container(
+      width: 130,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isCompleted 
+            ? const Color(0xFF9AE1B7).withOpacity(0.2)
+            : Colors.grey.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             icon,
-            size: 24,
-            color: theme.colorScheme.primary,
+            size: 28,
+            color: isCompleted 
+                ? const Color(0xFF1C6734)
+                : Colors.grey,
           ),
-          const SizedBox(width: 16),
+          const SizedBox(height: 8),
           Text(
-            label,
-            style: theme.textTheme.bodyMedium,
-          ),
-          const Spacer(),
-          Text(
-            value,
-            style: theme.textTheme.titleMedium?.copyWith(
+            title,
+            style: TextStyle(
+              fontSize: 14,
               fontWeight: FontWeight.bold,
+              color: isCompleted 
+                  ? Colors.black
+                  : Colors.grey,
             ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            description,
+            style: TextStyle(
+              fontSize: 10,
+              color: isCompleted 
+                  ? Colors.black.withOpacity(0.7)
+                  : Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildProfileOption(
-    BuildContext context,
-    String title,
-    IconData icon, {
+  Widget _buildOptionsCard(BuildContext context) {
+    return Card(
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          _buildOptionItem(
+            icon: Icons.person_outline,
+            title: 'Datos personales',
+            onTap: () {},
+          ),
+          const Divider(height: 1, indent: 16, endIndent: 16),
+          _buildOptionItem(
+            icon: Icons.notifications_outlined,
+            title: 'Notificaciones',
+            onTap: () {},
+          ),
+          const Divider(height: 1, indent: 16, endIndent: 16),
+          _buildOptionItem(
+            icon: Icons.security_outlined,
+            title: 'Privacidad y seguridad',
+            onTap: () {},
+          ),
+          const Divider(height: 1, indent: 16, endIndent: 16),
+          _buildOptionItem(
+            icon: Icons.help_outline,
+            title: 'Ayuda y soporte',
+            onTap: () {},
+          ),
+          const Divider(height: 1, indent: 16, endIndent: 16),
+          _buildOptionItem(
+            icon: Icons.logout,
+            title: 'Cerrar sesión',
+            textColor: Colors.red,
+            iconColor: Colors.red,
+            onTap: () {
+              context.go('/login');
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOptionItem({
+    required IconData icon,
+    required String title,
     required VoidCallback onTap,
     Color? textColor,
     Color? iconColor,
   }) {
-    final theme = Theme.of(context);
-    
     return ListTile(
-      leading: Icon(
-        icon,
-        color: iconColor ?? theme.colorScheme.primary,
+      leading: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: (iconColor == null)
+              ? const Color(0xFF9AE1B7).withOpacity(0.2)
+              : iconColor.withOpacity(0.1),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          icon,
+          color: iconColor ?? const Color(0xFF1C6734),
+          size: 20,
+        ),
       ),
       title: Text(
         title,
-        style: theme.textTheme.bodyLarge?.copyWith(
-          color: textColor,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: textColor ?? Colors.black,
         ),
       ),
-      trailing: const Icon(Icons.chevron_right),
+      trailing: Icon(
+        Icons.chevron_right,
+        color: textColor ?? Colors.black.withOpacity(0.5),
+        size: 20,
+      ),
       onTap: onTap,
     );
   }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_theme.dart';
 
 class OfferCard extends StatelessWidget {
   final IconData icon;
@@ -15,7 +14,7 @@ class OfferCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      color: AppTheme.primaryGreen.withOpacity(0.2),
+      color: const Color(0xFF9AE1B7).withOpacity(0.2), // Color con transparencia
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
