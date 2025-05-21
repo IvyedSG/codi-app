@@ -12,9 +12,9 @@ class AnimatedPageTransition extends StatelessWidget {
     super.key,
     required this.child,
     this.animateEntrance = true,
-    this.transitionType = TransitionType.fadeSlideUp,
-    this.duration = const Duration(milliseconds: 300),
-    this.curve = Curves.easeOutQuint,
+    this.transitionType = TransitionType.fadeScale, // Cambiado a fadeScale como default
+    this.duration = const Duration(milliseconds: 200), // Consistente con las transiciones del router
+    this.curve = Curves.easeOutCubic,
   });
 
   @override
@@ -30,15 +30,20 @@ class AnimatedPageTransition extends StatelessWidget {
       curve: curve,
       builder: (context, value, _) {
         switch (transitionType) {
-          case TransitionType.fadeSlideUp:
+          case TransitionType.fade:
             return Opacity(
               opacity: value,
-              child: Transform.translate(
-                offset: Offset(0, 20 * (1 - value)),
+              child: child,
+            );
+          case TransitionType.fadeScale:
+            return Opacity(
+              opacity: value,
+              child: Transform.scale(
+                scale: 0.98 + (0.02 * value),
                 child: child,
               ),
             );
-          case TransitionType.fadeSlideLeft:
+          case TransitionType.horizontalSlide:
             return Opacity(
               opacity: value,
               child: Transform.translate(
@@ -46,7 +51,7 @@ class AnimatedPageTransition extends StatelessWidget {
                 child: child,
               ),
             );
-          case TransitionType.fadeSlideRight:
+          case TransitionType.horizontalSlideReverse:
             return Opacity(
               opacity: value,
               child: Transform.translate(
@@ -54,19 +59,8 @@ class AnimatedPageTransition extends StatelessWidget {
                 child: child,
               ),
             );
-          case TransitionType.fadeScale:
-            return Opacity(
-              opacity: value,
-              child: Transform.scale(
-                scale: 0.95 + (0.05 * value),
-                child: child,
-              ),
-            );
-          case TransitionType.justFade:
-            return Opacity(
-              opacity: value,
-              child: child,
-            );
+          default:
+            return child;
         }
       },
     );
@@ -74,9 +68,8 @@ class AnimatedPageTransition extends StatelessWidget {
 }
 
 enum TransitionType {
-  fadeSlideUp,
-  fadeSlideLeft,
-  fadeSlideRight,
+  fade,
   fadeScale,
-  justFade,
+  horizontalSlide,
+  horizontalSlideReverse,
 }

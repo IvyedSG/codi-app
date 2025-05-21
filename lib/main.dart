@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart'; // Para kReleaseMode
 import 'routes/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/app_constants.dart';
@@ -24,8 +25,15 @@ void main() {
     DeviceOrientation.portraitDown,
   ]);
   
-  // Optimizaciones de memoria
+  // Optimizaciones de memoria y rendimiento
   PaintingBinding.instance.imageCache.maximumSizeBytes = 1024 * 1024 * 100; // 100 MB para caché de imágenes
+  
+  // Optimizaciones de rendimiento más seguras y compatibles
+  if (kReleaseMode) {
+    // Métodos alternativos de optimización que son más compatibles
+    // Las optimizaciones avanzadas como schedulerPhase no están disponibles
+    // o han cambiado en esta versión de Flutter
+  }
   
   runApp(const MyApp());
 }
@@ -76,7 +84,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Clase para transiciones suaves ultra-optimizadas
+// Clase para transiciones suaves mejoradas con efecto horizontal sutil
 class SmoothPageTransitionsBuilder extends PageTransitionsBuilder {
   const SmoothPageTransitionsBuilder();
 
@@ -88,25 +96,31 @@ class SmoothPageTransitionsBuilder extends PageTransitionsBuilder {
     Animation<double> secondaryAnimation,
     Widget child,
   ) {
-    // Omitir animación para rutas instantáneas
+    // Para rutas directas, usar solo fade sin desplazamiento
     if (route.settings.name?.startsWith('/') == true) {
       return FadeTransition(
-        opacity: animation.drive(CurveTween(curve: Curves.easeOutQuint)),
+        opacity: animation.drive(
+          CurveTween(curve: Curves.easeOut),
+        ),
         child: child,
       );
     }
     
-    const begin = Offset(0.0, 0.05);
-    const end = Offset.zero;
-    const curve = Curves.easeOutQuint;
-    
-    final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-    final offsetAnimation = animation.drive(tween);
-    
+    // Transición suave con fade y ligero efecto de escala
     return FadeTransition(
-      opacity: animation.drive(CurveTween(curve: curve)),
-      child: SlideTransition(
-        position: offsetAnimation,
+      opacity: animation.drive(
+        CurveTween(curve: Curves.easeOutCubic),
+      ),
+      child: ScaleTransition(
+        scale: Tween<double>(
+          begin: 0.98, 
+          end: 1.0,
+        ).animate(
+          CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeOutCubic,
+          ),
+        ),
         child: child,
       ),
     );

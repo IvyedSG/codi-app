@@ -39,6 +39,7 @@ class AppRouter {
               child: child,
             );
           },
+          transitionDuration: const Duration(milliseconds: 200),
         ),
       ),
       GoRoute(
@@ -60,6 +61,7 @@ class AppRouter {
           key: state.pageKey,
           child: _cachedHomeScreen,
           transitionsBuilder: _buildTransition,
+          transitionDuration: const Duration(milliseconds: 200),
         ),
       ),
       GoRoute(
@@ -68,6 +70,7 @@ class AppRouter {
           key: state.pageKey,
           child: _cachedHistoryScreen,
           transitionsBuilder: _buildTransition,
+          transitionDuration: const Duration(milliseconds: 200),
         ),
       ),
       GoRoute(
@@ -76,6 +79,7 @@ class AppRouter {
           key: state.pageKey,
           child: _cachedUploadScreen,
           transitionsBuilder: _buildTransition,
+          transitionDuration: const Duration(milliseconds: 200),
         ),
       ),
       GoRoute(
@@ -84,6 +88,7 @@ class AppRouter {
           key: state.pageKey,
           child: _cachedProfileScreen,
           transitionsBuilder: _buildTransition,
+          transitionDuration: const Duration(milliseconds: 200),
         ),
       ),
       GoRoute(
@@ -92,6 +97,7 @@ class AppRouter {
           key: state.pageKey,
           child: _cachedPromoScreen,
           transitionsBuilder: _buildTransition,
+          transitionDuration: const Duration(milliseconds: 200),
         ),
       ),
     ],
@@ -99,19 +105,33 @@ class AppRouter {
   
   // Método compartido para transiciones entre pantallas
   static Widget _buildTransition(context, animation, secondaryAnimation, child) {
-    const begin = Offset(0.0, 0.05);
-    const end = Offset.zero;
-    const curve = Curves.easeOutQuint;
+    const curve = Curves.easeOutCubic;
     
-    final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-    final offsetAnimation = animation.drive(tween);
-    
+    // Transición suave de fade con un ligero efecto de escala
     return FadeTransition(
       opacity: animation.drive(CurveTween(curve: curve)),
-      child: SlideTransition(
-        position: offsetAnimation,
+      child: ScaleTransition(
+        scale: Tween<double>(
+          begin: 0.98, 
+          end: 1.0,
+        ).animate(
+          CurvedAnimation(
+            parent: animation,
+            curve: curve,
+          ),
+        ),
         child: child,
       ),
     );
   }
+}
+
+// Ejemplo para HomeScreen
+@override
+Widget build(BuildContext context) {
+  return RepaintBoundary(
+    child: Scaffold(
+      // ...contenido existente
+    ),
+  );
 }
