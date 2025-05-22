@@ -7,6 +7,7 @@ import '../features/history/screens/history_screen.dart';
 import '../features/upload/screens/upload_screen.dart';
 import '../features/profile/screens/profile_screen.dart';
 import '../features/promos/screens/promos_screen.dart';
+import '../features/onboarding/screens/preferences_onboarding_screen.dart';
 import '../shared/widgets/app_bottom_nav_bar.dart';
 
 class AppRouter {
@@ -55,6 +56,10 @@ class AppRouter {
       GoRoute(
         path: '/promos',
         builder: (context, state) => _cachedPromoScreen,
+      ),
+      GoRoute(
+        path: '/onboarding',
+        builder: (context, state) => const PreferencesOnboardingScreen(),
       ),
     ],
   );

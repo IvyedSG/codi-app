@@ -40,7 +40,7 @@ class GreenReceiptsCard extends StatelessWidget {
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
-              height: 44,
+              height: 36, // Altura reducida
               child: ElevatedButton(
                 onPressed: () {
                   // Navegar a la sección de promociones disponibles
@@ -49,14 +49,15 @@ class GreenReceiptsCard extends StatelessWidget {
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(22),
+                    borderRadius: BorderRadius.circular(12), // Reduced border radius
                   ),
-                  padding: EdgeInsets.zero,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  elevation: 0,
                 ),
                 child: const Text(
                   'Ver Promos',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14, // Texto más pequeño
                     fontWeight: FontWeight.w500,
                   ),
                 ),

@@ -39,9 +39,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           _isLoading = false;
         });
 
-        // Navigate to home screen after successful registration
+        // Navigate to onboarding after successful registration
         if (mounted) {
-          context.go('/home');
+          // Corregir el error tipográfico aquí
+          context.go('/onboarding'); // Asegúrate de que se escribe correctamente
         }
       });
     } else if (!_acceptTerms) {

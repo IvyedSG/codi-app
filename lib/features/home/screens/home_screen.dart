@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/animated_page_transition.dart';
 import '../../../shared/widgets/app_bottom_nav_bar.dart';
-import '../widgets/carbo_points_card.dart';
 import '../widgets/co2_card.dart';
 import '../widgets/last_receipt_card.dart';
 import '../widgets/offer_card.dart';
-import '../widgets/upload_receipt_card.dart';
 import '../widgets/green_receipts_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -34,22 +33,22 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Última factura card
-              const LastReceiptCard(),
+              // Último recibo card (renombrado)
+              const LastReceiptCard(title: 'Último Recibo'),
 
               const SizedBox(height: 20),
 
               // Dual card row (Recibos Verdes y CO2 acumulado)
               const Row(
                 children: [
-                  // Recibos Verdes Card (componente actualizado)
+                  // Recibos Verdes Card
                   Expanded(
                     child: GreenReceiptsCard(),
                   ),
                   SizedBox(width: 10),
-                  // CO2 Acumulado Card
+                  // CO2 Acumulado Card (sin objetivo)
                   Expanded(
-                    child: CO2Card(),
+                    child: CO2Card(showObjective: false),
                   ),
                 ],
               ),
@@ -83,8 +82,62 @@ class HomeScreen extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // Subir nueva factura button card
-              const UploadReceiptCard(),
+              // Botones de acción rápida
+              Row(
+                children: [
+                  // Botón Escanear
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        context.go('/upload');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF9AE1B7),
+                        foregroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12), // Border radius reducido
+                        ),
+                        elevation: 0,
+                      ),
+                      icon: const Icon(Icons.camera_alt_rounded),
+                      label: const Text(
+                        'Escanear',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  // Botón Ver impacto
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        context.go('/profile');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12), // Border radius reducido
+                        ),
+                        elevation: 0,
+                      ),
+                      icon: const Icon(Icons.bar_chart_rounded),
+                      label: const Text(
+                        'Ver impacto',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

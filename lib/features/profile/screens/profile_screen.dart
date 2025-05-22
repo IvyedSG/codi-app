@@ -2,15 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/app_bottom_nav_bar.dart';
 import '../../../shared/widgets/animated_page_transition.dart';
-import '../../../core/theme/app_theme.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  // Mock user data - in a real app this would come from a user service
+  String userName = "Juan Pérez";
+  String userEmail = "juan.perez@gmail.com";
+  
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEEF6F6), // Color #EEF6F6 consistente
+      backgroundColor: const Color(0xFFEEF6F6),
       appBar: AppBar(
         backgroundColor: const Color(0xFFEEF6F6),
         elevation: 0,
@@ -23,14 +31,6 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
         centerTitle: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined, color: Colors.black),
-            onPressed: () {
-              // Navegar a configuración
-            },
-          ),
-        ],
       ),
       body: AnimatedPageTransition(
         child: SingleChildScrollView(
@@ -45,23 +45,6 @@ class ProfileScreen extends StatelessWidget {
               
               // Tarjeta de estadísticas de carbono
               _buildCarbonStatsCard(),
-              
-              const SizedBox(height: 24),
-              
-              // Sección de premios y logros
-              const Text(
-                'Logros',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              
-              const SizedBox(height: 16),
-              
-              // Tarjeta de logros
-              _buildAchievementsCard(),
               
               const SizedBox(height: 24),
               
@@ -123,9 +106,9 @@ class ProfileScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Juan Pérez',
-                    style: TextStyle(
+                  Text(
+                    userName,
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
@@ -133,40 +116,10 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'juan.perez@gmail.com',
+                    userEmail,
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.black.withOpacity(0.7),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10, 
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF9AE1B7).withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.eco_outlined,
-                          size: 14,
-                          color: Color(0xFF1C6734),
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          'Usuario Eco',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF1C6734),
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                 ],
@@ -187,7 +140,7 @@ class ProfileScreen extends StatelessWidget {
                   color: Color(0xFF1C6734),
                 ),
                 onPressed: () {
-                  // Editar perfil
+                  _editUserName();
                 },
               ),
             ),
@@ -291,6 +244,81 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildOptionsCard(BuildContext context) {
+    return Card(
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          _buildOptionItem(
+            icon: Icons.tune,
+            title: 'Preferencias de consumo',
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const PreferenciasScreen(),
+                ),
+              );
+            },
+          ),
+          const Divider(height: 1, indent: 16, endIndent: 16),
+          _buildOptionItem(
+            icon: Icons.logout,
+            title: 'Cerrar sesión',
+            textColor: Colors.red,
+            iconColor: Colors.red,
+            onTap: () {
+              context.go('/login');
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOptionItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+    Color? textColor,
+    Color? iconColor,
+  }) {
+    return ListTile(
+      leading: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: (iconColor == null)
+              ? const Color(0xFF9AE1B7).withOpacity(0.2)
+              : iconColor.withOpacity(0.1),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          icon,
+          color: iconColor ?? const Color(0xFF1C6734),
+          size: 20,
+        ),
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: textColor ?? Colors.black,
+        ),
+      ),
+      trailing: Icon(
+        Icons.chevron_right,
+        color: textColor ?? Colors.black.withOpacity(0.5),
+        size: 20,
+      ),
+      onTap: onTap,
+    );
+  }
+
   Widget _buildCarbonStat({
     required IconData icon,
     required String value,
@@ -349,70 +377,237 @@ class ProfileScreen extends StatelessWidget {
       ],
     );
   }
+  
+  void _editUserName() {
+    // Controller for text input
+    final TextEditingController controller = TextEditingController(text: userName);
+    
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Editar nombre'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: 'Ingresa tu nombre',
+            ),
+            autofocus: true,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                'Cancelar',
+                style: TextStyle(color: Colors.grey[700]),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  userName = controller.text;
+                });
+                Navigator.of(context).pop();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1C6734),
+              ),
+              child: const Text('Guardar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
 
-  Widget _buildAchievementsCard() {
-    return Card(
-      elevation: 0,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+// New screen for preferences
+class PreferenciasScreen extends StatefulWidget {
+  const PreferenciasScreen({super.key});
+
+  @override
+  State<PreferenciasScreen> createState() => _PreferenciasScreenState();
+}
+
+class _PreferenciasScreenState extends State<PreferenciasScreen> {
+  // Selected goals - can be multiple
+  List<String> selectedGoals = ['perder_peso', 'evitar_procesados'];
+  // Selected lifestyle - usually single selection but can be multiple
+  List<String> selectedLifestyles = ['prioriza_local'];
+  // Ingredients to avoid - can be multiple
+  List<String> selectedIngredientsToAvoid = ['evitar_azucar', 'evitar_conservantes'];
+
+  // Preference data
+  final Map<String, Map<String, String>> allPreferences = {
+    'goals': {
+      'perder_peso': 'Quiero perder peso de forma saludable',
+      'ganar_masa_muscular': 'Estoy buscando aumentar mi masa muscular',
+      'mantener_peso': 'Solo quiero mantener un peso saludable',
+      'evitar_procesados': 'Quiero reducir mi consumo de alimentos ultraprocesados',
+      'alimentacion_balanceada': 'Busco una alimentación variada y equilibrada',
+    },
+    'lifestyles': {
+      'vegano': 'Solo consumo productos 100% de origen vegetal',
+      'vegetariano': 'No consumo carne, pero sí huevos y lácteos',
+      'cero_residuos': 'Busco reducir al máximo el empaque y residuos',
+      'prioriza_local': 'Prefiero productos cultivados o elaborados en Perú',
+      'solo_organico': 'Solo quiero productos certificados como orgánicos',
+    },
+    'ingredientsToAvoid': {
+      'evitar_azucar': 'Evito productos con azúcar añadida',
+      'evitar_gluten': 'No consumo productos con gluten',
+      'evitar_lactosa': 'Prefiero productos sin lactosa',
+      'evitar_conservantes': 'Evito productos con conservantes o aditivos artificiales',
+      'evitar_soya': 'No consumo productos derivados de soya',
+    },
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFEEF6F6),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFEEF6F6),
+        elevation: 0,
+        title: const Text(
+          'Preferencias de consumo',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'Mis logros',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+            // Explanation text
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF9AE1B7).withOpacity(0.2),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Text(
+                'Personaliza tus preferencias para recibir recomendaciones más acordes a tus necesidades y valores personales.',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF1C6734),
                 ),
-                Text(
-                  'Ver todos',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: const Color(0xFF1C6734),
-                  ),
-                ),
-              ],
+              ),
             ),
             
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             
-            // Lista horizontal de logros
+            // Objetivos personales section
+            _buildSectionTitle('🎯 Objetivos personales de consumo'),
+            const SizedBox(height: 8),
+            _buildPreferenceSection(
+              preferences: allPreferences['goals']!,
+              selectedValues: selectedGoals,
+              onChanged: (key, value) {
+                setState(() {
+                  if (value) {
+                    if (!selectedGoals.contains(key)) {
+                      selectedGoals.add(key);
+                    }
+                  } else {
+                    selectedGoals.remove(key);
+                  }
+                });
+              },
+            ),
+            
+            const SizedBox(height: 24),
+            
+            // Estilo de vida section
+            _buildSectionTitle('🌱 Estilo de vida y valores personales'),
+            const SizedBox(height: 4),
+            const Text(
+              'Selecciona una opción principal',
+              style: TextStyle(
+                fontSize: 14,
+                fontStyle: FontStyle.italic,
+                color: Colors.grey,
+              ),
+            ),
+            const SizedBox(height: 8),
+            _buildPreferenceSection(
+              preferences: allPreferences['lifestyles']!,
+              selectedValues: selectedLifestyles,
+              onChanged: (key, value) {
+                setState(() {
+                  if (value) {
+                    selectedLifestyles = [key]; // Single selection
+                  } else {
+                    selectedLifestyles.remove(key);
+                  }
+                });
+              },
+              singleSelect: true,
+            ),
+            
+            const SizedBox(height: 24),
+            
+            // Ingredientes a evitar section
+            _buildSectionTitle('⛔ Ingredientes o componentes a evitar'),
+            const SizedBox(height: 8),
+            _buildPreferenceSection(
+              preferences: allPreferences['ingredientsToAvoid']!,
+              selectedValues: selectedIngredientsToAvoid,
+              onChanged: (key, value) {
+                setState(() {
+                  if (value) {
+                    if (!selectedIngredientsToAvoid.contains(key)) {
+                      selectedIngredientsToAvoid.add(key);
+                    }
+                  } else {
+                    selectedIngredientsToAvoid.remove(key);
+                  }
+                });
+              },
+            ),
+            
+            const SizedBox(height: 40),
+            
+            // Save button with black design
             SizedBox(
-              height: 110,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  _buildAchievementItem(
-                    icon: Icons.eco_outlined,
-                    title: 'Eco-Novato',
-                    description: 'Primer mes usando la app',
-                    isCompleted: true,
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {
+                  // Save preferences and go back
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Preferencias guardadas correctamente'),
+                      backgroundColor: Colors.black,
+                    ),
+                  );
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  const SizedBox(width: 12),
-                  _buildAchievementItem(
-                    icon: Icons.receipt_long_rounded,
-                    title: 'Scanner Pro',
-                    description: '10 facturas escaneadas',
-                    isCompleted: true,
+                  elevation: 0,
+                ),
+                child: const Text(
+                  'Guardar preferencias',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
-                  const SizedBox(width: 12),
-                  _buildAchievementItem(
-                    icon: Icons.shopping_bag_outlined,
-                    title: 'Comprador Verde',
-                    description: '5 compras eco-amigables',
-                    isCompleted: false,
-                  ),
-                ],
+                ),
               ),
             ),
           ],
@@ -421,145 +616,72 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildAchievementItem({
-    required IconData icon,
-    required String title,
-    required String description,
-    required bool isCompleted,
-  }) {
-    return Container(
-      width: 130,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isCompleted 
-            ? const Color(0xFF9AE1B7).withOpacity(0.2)
-            : Colors.grey.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            size: 28,
-            color: isCompleted 
-                ? const Color(0xFF1C6734)
-                : Colors.grey,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: isCompleted 
-                  ? Colors.black
-                  : Colors.grey,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 2),
-          Text(
-            description,
-            style: TextStyle(
-              fontSize: 10,
-              color: isCompleted 
-                  ? Colors.black.withOpacity(0.7)
-                  : Colors.grey,
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Colors.black,
       ),
     );
   }
 
-  Widget _buildOptionsCard(BuildContext context) {
+  Widget _buildPreferenceSection({
+    required Map<String, String> preferences,
+    required List<String> selectedValues,
+    required Function(String, bool) onChanged,
+    bool singleSelect = false,
+  }) {
     return Card(
       elevation: 0,
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      child: Column(
-        children: [
-          _buildOptionItem(
-            icon: Icons.person_outline,
-            title: 'Datos personales',
-            onTap: () {},
-          ),
-          const Divider(height: 1, indent: 16, endIndent: 16),
-          _buildOptionItem(
-            icon: Icons.notifications_outlined,
-            title: 'Notificaciones',
-            onTap: () {},
-          ),
-          const Divider(height: 1, indent: 16, endIndent: 16),
-          _buildOptionItem(
-            icon: Icons.security_outlined,
-            title: 'Privacidad y seguridad',
-            onTap: () {},
-          ),
-          const Divider(height: 1, indent: 16, endIndent: 16),
-          _buildOptionItem(
-            icon: Icons.help_outline,
-            title: 'Ayuda y soporte',
-            onTap: () {},
-          ),
-          const Divider(height: 1, indent: 16, endIndent: 16),
-          _buildOptionItem(
-            icon: Icons.logout,
-            title: 'Cerrar sesión',
-            textColor: Colors.red,
-            iconColor: Colors.red,
-            onTap: () {
-              context.go('/login');
-            },
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Column(
+          children: preferences.entries.map((entry) {
+            bool isSelected = selectedValues.contains(entry.key);
+            
+            return _buildPreferenceItem(
+              title: entry.value,
+              isSelected: isSelected,
+              onChanged: (value) => onChanged(entry.key, value),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
 
-  Widget _buildOptionItem({
-    required IconData icon,
+  Widget _buildPreferenceItem({
     required String title,
-    required VoidCallback onTap,
-    Color? textColor,
-    Color? iconColor,
+    required bool isSelected,
+    required Function(bool) onChanged,
   }) {
-    return ListTile(
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: (iconColor == null)
-              ? const Color(0xFF9AE1B7).withOpacity(0.2)
-              : iconColor.withOpacity(0.1),
-          shape: BoxShape.circle,
-        ),
-        child: Icon(
-          icon,
-          color: iconColor ?? const Color(0xFF1C6734),
-          size: 20,
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Switch(
+            value: isSelected,
+            onChanged: onChanged,
+            activeColor: const Color(0xFF1C6734),
+            activeTrackColor: const Color(0xFF9AE1B7),
+          ),
+        ],
       ),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          color: textColor ?? Colors.black,
-        ),
-      ),
-      trailing: Icon(
-        Icons.chevron_right,
-        color: textColor ?? Colors.black.withOpacity(0.5),
-        size: 20,
-      ),
-      onTap: onTap,
     );
   }
 }

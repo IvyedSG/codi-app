@@ -76,6 +76,58 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 
+                const SizedBox(height: 16),
+                
+                // Lema de la aplicación rediseñado como cita elegante
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 40),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      top: BorderSide(color: AppTheme.primaryGreen.withOpacity(0.3), width: 1),
+                      bottom: BorderSide(color: AppTheme.primaryGreen.withOpacity(0.3), width: 1),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      // Comilla decorativa
+                      Icon(
+                        Icons.format_quote,
+                        color: AppTheme.primaryGreen.withOpacity(0.7),
+                        size: 28,
+                      ),
+                      const SizedBox(height: 8),
+                      
+                      // Texto principal en estilo cita
+                      Text(
+                        "Cada recibo deja una huella.",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                          fontStyle: FontStyle.italic,
+                          letterSpacing: 0.3,
+                          color: Colors.black87,
+                          height: 1.4,
+                        ),
+                      ),
+                      
+                      // Frase destacada "Hazla verde"
+                      Text(
+                        "Hazla verde.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF0C5924),
+                          letterSpacing: 0.5,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                
                 const SizedBox(height: 32),
 
                 // Login form
@@ -162,29 +214,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 8),
-                      // Forgot password
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            minimumSize: const Size(10, 10),
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          onPressed: () {
-                            // Navegar a recuperar contraseña
-                          },
-                          child: Text(
-                            '¿Recuperar contraseña?',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: AppTheme.textDark,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
+                      
+                      // Eliminada la sección de recuperar contraseña y su spacing
+                      
+                      const SizedBox(height: 32), // Aumentado el espacio para compensar
+                      
                       // Login button - Aumentado el tamaño vertical para evitar cortes
                       SizedBox(
                         width: double.infinity,

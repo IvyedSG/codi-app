@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../shared/widgets/app_bottom_nav_bar.dart';
 import '../../../shared/widgets/animated_page_transition.dart';
 import '../../../core/theme/app_theme.dart';
+import 'all_promos_screen.dart'; // Make sure this path is correct and the class exists
 
 class PromosScreen extends StatelessWidget {
   const PromosScreen({super.key});
@@ -23,6 +24,34 @@ class PromosScreen extends StatelessWidget {
         ),
         centerTitle: false,
         actions: [
+          // Green receipt counter moved to app header
+          Container(
+            margin: const EdgeInsets.only(right: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1C6734).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.eco_outlined,
+                  size: 16,
+                  color: Color(0xFF1C6734),
+                ),
+                SizedBox(width: 4),
+                Text(
+                  '7 recibos',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1C6734),
+                  ),
+                ),
+              ],
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.filter_list, color: Colors.black),
             onPressed: () {
@@ -38,7 +67,7 @@ class PromosScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Banner principal 
-              _buildMainPromoBanner(),
+              _buildMainPromoBanner(context),
               
               const SizedBox(height: 24),
               
@@ -69,15 +98,15 @@ class PromosScreen extends StatelessWidget {
                     const SizedBox(width: 12),
                     _buildFeaturedPromoCard(
                       'Eco bolsa gratis',
-                      'Por compras mayores a S/100',
-                      'assets/images/tottus_logo.png',
+                      'Por compras con recibos verdes',
+                      'assets/images/plazavea_logo.png',
                       Icons.eco_outlined,
                     ),
                     const SizedBox(width: 12),
                     _buildFeaturedPromoCard(
                       '2x1 en productos',
                       'Seleccionados con etiqueta verde',
-                      'assets/images/tottus_logo.png',
+                      'assets/images/wong_logo.png',
                       Icons.local_offer_outlined,
                     ),
                   ],
@@ -86,37 +115,43 @@ class PromosScreen extends StatelessWidget {
               
               const SizedBox(height: 24),
               
-              // Título sección por puntos
-              const Text(
-                'Canjea tus CarboPuntos',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+              // Título sección por recibos verdes - removed the counter from here
+              Row(
+                children: [
+                  const Icon(Icons.eco_outlined, color: Color(0xFF1C6734), size: 24),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Exclusivo para Recibos Verdes',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
               ),
               
               const SizedBox(height: 12),
               
-              // Lista de promociones por puntos
-              _buildPointsPromoCard(
-                '100 puntos',
+              // Lista de promociones por recibos verdes
+              _buildGreenReceiptPromoCard(
+                '1 Recibo Verde',
                 'Descuento de S/10 en tu próxima compra',
                 Icons.money_off_outlined,
               ),
               
               const SizedBox(height: 12),
               
-              _buildPointsPromoCard(
-                '200 puntos',
+              _buildGreenReceiptPromoCard(
+                '2 Recibos Verdes',
                 'Bolsa ecológica reutilizable',
                 Icons.shopping_bag_outlined,
               ),
               
               const SizedBox(height: 12),
               
-              _buildPointsPromoCard(
-                '500 puntos',
+              _buildGreenReceiptPromoCard(
+                '5 Recibos Verdes',
                 'Productos orgánicos gratis',
                 Icons.eco_outlined,
               ),
@@ -147,7 +182,7 @@ class PromosScreen extends StatelessWidget {
               _buildStorePromoCard(
                 'Metro',
                 '10% de descuento en productos eco-amigables',
-                'assets/images/tottus_logo.png', // Aquí iría el logo de Metro
+                'assets/images/metro_logo.png',
               ),
               
               const SizedBox(height: 12),
@@ -155,11 +190,11 @@ class PromosScreen extends StatelessWidget {
               _buildStorePromoCard(
                 'Plaza Vea',
                 'Miércoles verde: 15% en productos orgánicos',
-                'assets/images/tottus_logo.png', // Aquí iría el logo de Plaza Vea
+                'assets/images/plazavea_logo.png',
               ),
               
               // Espacio adicional para evitar que el último elemento quede pegado a la barra inferior
-              const SizedBox(height: 28), // Aumentado para evitar cualquier overflow
+              const SizedBox(height: 28),
             ],
           ),
         ),
@@ -168,10 +203,10 @@ class PromosScreen extends StatelessWidget {
     );
   }
   
-  // Banner principal corregido para mostrar completamente el botón
-  Widget _buildMainPromoBanner() {
+  // Banner principal
+  Widget _buildMainPromoBanner(BuildContext context) {
     return Container(
-      height: 200,
+      height: 220, // Increased height to accommodate content
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -179,7 +214,6 @@ class PromosScreen extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [
             const Color(0xFF9AE1B7),
-            const Color(0xFF9AE1B7).withOpacity(0.8),
             const Color(0xFF9AE1B7).withOpacity(0.6),
           ],
         ),
@@ -189,7 +223,7 @@ class PromosScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: Stack(
           children: [
-            // Círculos decorativos ahora con mejor posicionamiento
+            // Círculos decorativos
             Positioned(
               right: 20,
               top: 20,
@@ -204,7 +238,7 @@ class PromosScreen extends StatelessWidget {
             ),
             Positioned(
               left: 20,
-              bottom: 0, // Ajustado para no interferir con el botón
+              bottom: 0,
               child: Container(
                 width: 100,
                 height: 100,
@@ -215,13 +249,40 @@ class PromosScreen extends StatelessWidget {
               ),
             ),
             
-            // Contenido del banner con mejor distribución
+            // Contenido del banner
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min, // Added to prevent overflow
                 children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.eco_outlined,
+                        color: Color(0xFF1C6734),
+                        size: 28,
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1C6734),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: const Text(
+                          'NOVEDAD',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
                   const Text(
                     '¡Nuevas promociones!',
                     style: TextStyle(
@@ -242,9 +303,14 @@ class PromosScreen extends StatelessWidget {
                   Container(
                     width: 140,
                     height: 44,
-                    margin: const EdgeInsets.only(bottom: 4),
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const AllPromosScreen(),
+                          ),
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
                         foregroundColor: Colors.white,
@@ -254,12 +320,17 @@ class PromosScreen extends StatelessWidget {
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                       ),
-                      child: const Text(
-                        'Ver todos',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Ver todos',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -275,7 +346,7 @@ class PromosScreen extends StatelessWidget {
   // Tarjeta de promoción destacada
   Widget _buildFeaturedPromoCard(String title, String description, String logoPath, IconData icon) {
     return Container(
-      width: 200,
+      width: 180, // Reduced width to fit better on smaller screens
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -285,7 +356,7 @@ class PromosScreen extends StatelessWidget {
         children: [
           // Parte superior con icono
           Container(
-            height: 100,
+            height: 90, // Slightly reduced height
             decoration: BoxDecoration(
               color: const Color(0xFF9AE1B7).withOpacity(0.2),
               borderRadius: const BorderRadius.only(
@@ -296,7 +367,7 @@ class PromosScreen extends StatelessWidget {
             child: Center(
               child: Icon(
                 icon,
-                size: 50,
+                size: 40, // Slightly smaller icon
                 color: const Color(0xFF1C6734),
               ),
             ),
@@ -310,7 +381,7 @@ class PromosScreen extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 15, // Slightly smaller font
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
@@ -335,8 +406,8 @@ class PromosScreen extends StatelessWidget {
     );
   }
   
-  // Tarjeta de promoción por puntos
-  Widget _buildPointsPromoCard(String points, String description, IconData icon) {
+  // Tarjeta de promoción por recibos verdes
+  Widget _buildGreenReceiptPromoCard(String receipts, String description, IconData icon) {
     return Card(
       elevation: 0,
       color: Colors.white,
@@ -344,13 +415,14 @@ class PromosScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0), // Adjusted padding
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center, // Ensure vertical alignment
           children: [
             // Contenedor del icono con fondo verde
             Container(
-              width: 50,
-              height: 50,
+              width: 45, // Slightly smaller
+              height: 45, // Slightly smaller
               decoration: BoxDecoration(
                 color: const Color(0xFF9AE1B7).withOpacity(0.2),
                 shape: BoxShape.circle,
@@ -358,24 +430,35 @@ class PromosScreen extends StatelessWidget {
               child: Center(
                 child: Icon(
                   icon,
-                  size: 28,
+                  size: 24, // Smaller icon
                   color: const Color(0xFF1C6734),
                 ),
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 12), // Slightly smaller spacing
             // Textos
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min, // Prevent vertical overflow
                 children: [
-                  Text(
-                    points,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        receipts,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(
+                        Icons.eco_outlined,
+                        size: 16,
+                        color: const Color(0xFF1C6734),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -384,31 +467,34 @@ class PromosScreen extends StatelessWidget {
                       fontSize: 14,
                       color: Colors.black.withOpacity(0.7),
                     ),
+                    maxLines: 2, // Limit lines to prevent overflow
+                    overflow: TextOverflow.ellipsis, // Handle text overflow
                   ),
                 ],
               ),
             ),
+            const SizedBox(width: 8), // Reduced spacing
             // Botón de canjear
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF9AE1B7),
-                foregroundColor: Colors.black,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+            SizedBox(
+              width: 80, // Fixed width
+              height: 36,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF9AE1B7),
+                  foregroundColor: Colors.black,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: EdgeInsets.zero, // Remove padding to fit text
                 ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                minimumSize: const Size(80, 36),
-              ),
-              child: const Text(
-                'Canjear',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
+                child: const Text(
+                  'Canjear',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
                 ),
               ),
             ),
@@ -435,8 +521,8 @@ class PromosScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               child: Image.asset(
                 logoPath,
-                width: 60,
-                height: 60,
+                width: 50, // Smaller logo
+                height: 50, // Smaller logo
                 fit: BoxFit.contain,
               ),
             ),
@@ -445,6 +531,7 @@ class PromosScreen extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min, // Prevent vertical overflow
                 children: [
                   Text(
                     storeName,
@@ -461,6 +548,8 @@ class PromosScreen extends StatelessWidget {
                       fontSize: 14,
                       color: Colors.black.withOpacity(0.7),
                     ),
+                    maxLines: 2, // Limit lines
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -469,6 +558,7 @@ class PromosScreen extends StatelessWidget {
             Icon(
               Icons.chevron_right,
               color: Colors.black.withOpacity(0.5),
+              size: 24,
             ),
           ],
         ),

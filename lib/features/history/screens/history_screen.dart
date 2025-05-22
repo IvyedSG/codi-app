@@ -2,48 +2,80 @@ import 'package:flutter/material.dart';
 import '../../../shared/widgets/app_bottom_nav_bar.dart';
 import '../../../shared/widgets/animated_page_transition.dart';
 import '../../../core/theme/app_theme.dart';
+import '../widgets/receipt_detail_view.dart';
+import '../../upload/models/receipt_model.dart';
 
-class HistoryScreen extends StatelessWidget {
+class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Simular datos para el historial
-    final List<Map<String, dynamic>> historyItems = [
-      {
-        'date': '15 May 2025',
-        'store': 'Tottus',
-        'co2': 8.2,
-        'isGreen': true,  // Antes era 'points'
-        'items': 12,
-        'hasPromo': true,
-      },
-      {
-        'date': '10 May 2025',
-        'store': 'Plaza Vea',
-        'co2': 15.7,
-        'isGreen': false,  // Antes era 'points'
-        'items': 8,
-        'hasPromo': false,
-      },
-      {
-        'date': '02 May 2025',
-        'store': 'Metro',
-        'co2': 5.3,
-        'isGreen': true,  // Antes era 'points'
-        'items': 15,
-        'hasPromo': true,
-      },
-      {
-        'date': '28 Abr 2025',
-        'store': 'Tottus',
-        'co2': 12.8,
-        'isGreen': false,  // Antes era 'points'
-        'items': 10,
-        'hasPromo': false,
-      },
-    ];
+  State<HistoryScreen> createState() => _HistoryScreenState();
+}
 
+class _HistoryScreenState extends State<HistoryScreen> {
+  // Colores mejorados para mejor visibilidad
+  static const Color verdeColor = Color(0xFF2E7D32); // Verde más oscuro y vibrante
+  static const Color regularColor = Color(0xFFF57C00); // Naranja más oscuro
+  static const Color altoColor = Color(0xFFD32F2F); // Rojo más oscuro
+
+  // Simular datos para el historial usando el modelo Receipt
+  final List<Receipt> historyItems = [
+    Receipt(
+      id: '1',
+      storeName: 'Tottus',
+      date: '15 May 2025',
+      total: 75.50,
+      co2: 6.3,
+      impactLevel: 'verde',
+      ecoProductCount: 5,
+      receiptImagePath: 'assets/images/receipt_sample.jpg',
+      scannedText: '',
+    ),
+    Receipt(
+      id: '2',
+      storeName: 'Plaza Vea',
+      date: '10 May 2025',
+      total: 120.80,
+      co2: 14.2,
+      impactLevel: 'regular',
+      ecoProductCount: 2,
+      receiptImagePath: 'assets/images/receipt_sample.jpg',
+      scannedText: '',
+    ),
+    Receipt(
+      id: '3',
+      storeName: 'Metro',
+      date: '02 May 2025',
+      total: 95.30,
+      co2: 22.5,
+      impactLevel: 'alto',
+      ecoProductCount: 1,
+      receiptImagePath: 'assets/images/receipt_sample.jpg',
+      scannedText: '',
+    ),
+    Receipt(
+      id: '4',
+      storeName: 'Wong',
+      date: '28 Abr 2025',
+      total: 45.20,
+      co2: 5.1,
+      impactLevel: 'verde',
+      ecoProductCount: 4,
+      receiptImagePath: 'assets/images/receipt_sample.jpg',
+      scannedText: '',
+    ),
+  ];
+
+  // Mapeo de nombres de tiendas a sus logos
+  final Map<String, String> storeLogos = {
+    'Tottus': 'assets/images/tottus_logo.png',
+    'Plaza Vea': 'assets/images/plazavea_logo.png',
+    'Metro': 'assets/images/metro_logo.png',
+    'Wong': 'assets/images/wong_logo.png', // Reemplazar con logo correcto
+  };
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFEEF6F6), // Color #EEF6F6 consistente
       appBar: AppBar(
@@ -109,18 +141,11 @@ class HistoryScreen extends StatelessWidget {
                   shrinkWrap: true,
                   itemCount: historyItems.length,
                   itemBuilder: (context, index) {
-                    final item = historyItems[index];
+                    final receipt = historyItems[index];
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: RepaintBoundary( // Mejora el rendimiento al aislar la pintura
-                        child: _buildHistoryItem(
-                          date: item['date'],
-                          store: item['store'],
-                          co2: item['co2'],
-                          isGreen: item['isGreen'], // Cambiado de 'points'
-                          items: item['items'],
-                          hasPromo: item['hasPromo'],
-                        ),
+                        child: _buildHistoryItem(receipt),
                       ),
                     );
                   },
@@ -139,6 +164,24 @@ class HistoryScreen extends StatelessWidget {
   }
 
   Widget _buildActivitySummaryCard() {
+    // Calcular los totales
+    double totalCO2 = 0;
+    int verdeCount = 0;
+    int regularCount = 0;
+    int altoCount = 0;
+    
+    for (final receipt in historyItems) {
+      totalCO2 += receipt.co2;
+      
+      if (receipt.impactLevel == 'verde') {
+        verdeCount++;
+      } else if (receipt.impactLevel == 'regular') {
+        regularCount++;
+      } else if (receipt.impactLevel == 'alto') {
+        altoCount++;
+      }
+    }
+
     return Card(
       elevation: 0,
       color: Colors.white,
@@ -165,17 +208,18 @@ class HistoryScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildActivityStat(
-                  value: '4',
+                  value: historyItems.length.toString(),
                   label: 'Compras',
                   icon: Icons.shopping_cart_outlined,
                 ),
                 _buildActivityStat(
-                  value: '2',
-                  label: 'Recibos Verdes',
+                  value: verdeCount.toString(),
+                  label: 'Ejemplares',
                   icon: Icons.eco_outlined,
+                  color: verdeColor,
                 ),
                 _buildActivityStat(
-                  value: '42 Kg',
+                  value: '${totalCO2.toStringAsFixed(1)} Kg',
                   label: 'CO2 Total',
                   icon: Icons.cloud_outlined,
                 ),
@@ -184,9 +228,9 @@ class HistoryScreen extends StatelessWidget {
             
             const SizedBox(height: 16),
             
-            // Gráfico simplificado (se podría mejorar con un gráfico real)
+            // Gráfico simplificado con colores mejorados
             Container(
-              height: 80,
+              height: 100,
               decoration: BoxDecoration(
                 color: const Color(0xFFEEF6F6),
                 borderRadius: BorderRadius.circular(12),
@@ -196,11 +240,9 @@ class HistoryScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  _buildBarColumn(0.3, 'Ene'),
-                  _buildBarColumn(0.5, 'Feb'),
-                  _buildBarColumn(0.4, 'Mar'),
-                  _buildBarColumn(0.7, 'Abr'),
-                  _buildBarColumn(0.6, 'May', isActive: true),
+                  _buildImpactColumn(verdeCount, 'Ejemplar', verdeColor),
+                  _buildImpactColumn(regularCount, 'Regular', regularColor),
+                  _buildImpactColumn(altoCount, 'Alto impacto', altoColor),
                 ],
               ),
             ),
@@ -214,19 +256,22 @@ class HistoryScreen extends StatelessWidget {
     required String value,
     required String label,
     required IconData icon,
+    Color? color,
   }) {
+    final Color iconColor = color ?? verdeColor;
+    
     return Column(
       children: [
         Container(
           width: 50,
           height: 50,
           decoration: BoxDecoration(
-            color: const Color(0xFF9AE1B7).withOpacity(0.2),
+            color: iconColor.withOpacity(0.2),
             shape: BoxShape.circle,
           ),
           child: Icon(
             icon,
-            color: const Color(0xFF1C6734),
+            color: iconColor,
             size: 24,
           ),
         ),
@@ -250,26 +295,34 @@ class HistoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBarColumn(double height, String label, {bool isActive = false}) {
+  Widget _buildImpactColumn(int count, String label, Color color) {
+    final double maxHeight = 50.0; // Altura máxima de la barra
+    final double height = count > 0 ? (count / historyItems.length) * maxHeight : 5.0;
+    
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Container(
-          width: 24,
-          height: 50 * height,
+          width: 40,
+          height: height.clamp(5.0, maxHeight),
           decoration: BoxDecoration(
-            color: isActive 
-                ? const Color(0xFF9AE1B7) 
-                : const Color(0xFF9AE1B7).withOpacity(0.4),
+            color: color,
             borderRadius: BorderRadius.circular(4),
           ),
         ),
         const SizedBox(height: 4),
         Text(
+          '$count',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+        Text(
           label,
           style: TextStyle(
             fontSize: 10,
-            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
             color: Colors.black.withOpacity(0.7),
           ),
         ),
@@ -277,14 +330,48 @@ class HistoryScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHistoryItem({
-    required String date,
-    required String store,
-    required double co2,
-    required bool isGreen, // Cambiado de 'points'
-    required int items,
-    required bool hasPromo,
-  }) {
+  Widget _buildHistoryItem(Receipt receipt) {
+    // Obtener color según nivel de impacto con colores mejorados
+    Color statusColor;
+    Widget statusIcon;
+
+    switch (receipt.impactLevel) {
+      case 'verde':
+        statusColor = verdeColor;
+        statusIcon = const Icon(
+          Icons.eco_outlined,
+          color: Colors.white,
+          size: 16,
+        );
+        break;
+      case 'regular':
+        statusColor = regularColor;
+        statusIcon = const Icon(
+          Icons.warning_amber_outlined,
+          color: Colors.white,
+          size: 16,
+        );
+        break;
+      case 'alto':
+        statusColor = altoColor;
+        statusIcon = const Icon(
+          Icons.dangerous_outlined,
+          color: Colors.white,
+          size: 16,
+        );
+        break;
+      default:
+        statusColor = Colors.grey;
+        statusIcon = const Icon(
+          Icons.help_outline,
+          color: Colors.white,
+          size: 16,
+        );
+    }
+
+    // Obtener logo de la tienda
+    final String? logoPath = storeLogos[receipt.storeName];
+
     return Card(
       elevation: 0,
       color: Colors.white,
@@ -295,77 +382,94 @@ class HistoryScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Encabezado con fecha y tienda
+            // Encabezado con fecha, tienda y logo
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF9AE1B7).withOpacity(0.2),
-                        shape: BoxShape.circle,
+                Expanded(
+                  child: Row(
+                    children: [
+                      // Logo de la tienda (si existe) o icono genérico
+                      if (logoPath != null)
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.asset(
+                              logoPath,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        )
+                      else
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: verdeColor.withOpacity(0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.receipt_long_rounded,
+                            color: verdeColor,
+                            size: 20,
+                          ),
+                        ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              receipt.date,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            Text(
+                              receipt.storeName,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black.withOpacity(0.7),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      child: const Icon(
-                        Icons.receipt_long_rounded,
-                        color: Color(0xFF1C6734),
-                        size: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          date,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Text(
-                          store,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black.withOpacity(0.7),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                if (hasPromo)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF9AE1B7).withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Row(
-                      children: [
-                        Icon(
-                          Icons.local_offer_outlined,
-                          size: 14,
-                          color: Color(0xFF1C6734),
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          'Promos',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF1C6734),
-                          ),
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: statusColor,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    children: [
+                      statusIcon,
+                      const SizedBox(width: 4),
+                      Text(
+                        receipt.impactLevel.toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
             
@@ -382,18 +486,18 @@ class HistoryScreen extends StatelessWidget {
               children: [
                 _buildPurchaseStat(
                   label: 'CO2 generado',
-                  value: '$co2 Kg',
+                  value: '${receipt.co2.toStringAsFixed(1)} Kg',
                   icon: Icons.cloud_outlined,
                 ),
                 _buildPurchaseStat(
-                  label: 'Estado',
-                  value: isGreen ? 'Verde' : 'Regular',
-                  icon: isGreen ? Icons.eco_outlined : Icons.receipt_outlined,
-                  isHighlighted: isGreen,
+                  label: 'Calificación',
+                  value: _getCalificationText(receipt.impactLevel),
+                  icon: _getIconForImpactLevel(receipt.impactLevel),
+                  color: _getColorForImpactLevel(receipt.impactLevel),
                 ),
                 _buildPurchaseStat(
                   label: 'Productos',
-                  value: '$items items',
+                  value: '7 items',
                   icon: Icons.shopping_bag_outlined,
                 ),
               ],
@@ -403,10 +507,19 @@ class HistoryScreen extends StatelessWidget {
             
             // Botón para ver detalles
             OutlinedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ReceiptDetailView(
+                      receipt: receipt, 
+                      storeLogos: storeLogos
+                    ),
+                  ),
+                );
+              },
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                side: const BorderSide(color: Color(0xFF1C6734), width: 1.5),
+                side: BorderSide(color: verdeColor, width: 1.5),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -435,30 +548,68 @@ class HistoryScreen extends StatelessWidget {
     );
   }
 
+  String _getCalificationText(String impactLevel) {
+    switch (impactLevel) {
+      case 'verde':
+        return 'Ejemplar';
+      case 'regular':
+        return 'Regular';
+      case 'alto':
+        return 'Crítico';
+      default:
+        return 'No evaluado';
+    }
+  }
+
+  Color _getColorForImpactLevel(String impactLevel) {
+    switch (impactLevel) {
+      case 'verde':
+        return verdeColor;
+      case 'regular':
+        return regularColor;
+      case 'alto':
+        return altoColor;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  IconData _getIconForImpactLevel(String impactLevel) {
+    switch (impactLevel) {
+      case 'verde':
+        return Icons.eco_outlined;
+      case 'regular':
+        return Icons.warning_amber_outlined;
+      case 'alto':
+        return Icons.dangerous_outlined;
+      default:
+        return Icons.help_outline;
+    }
+  }
+
   Widget _buildPurchaseStat({
     required String label,
     required String value,
     required IconData icon,
-    bool isHighlighted = false,
+    Color? color,
   }) {
-    final color = isHighlighted ? const Color(0xFF1C6734) : Colors.black;
-    final valueStyle = TextStyle(
-      fontSize: 16,
-      fontWeight: FontWeight.bold,
-      color: color,
-    );
+    final displayColor = color ?? Colors.black;
     
     return Column(
       children: [
         Icon(
           icon,
           size: 20,
-          color: color,
+          color: displayColor,
         ),
         const SizedBox(height: 4),
         Text(
           value,
-          style: valueStyle,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: displayColor,
+          ),
         ),
         Text(
           label,

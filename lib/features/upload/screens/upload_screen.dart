@@ -1,9 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../shared/widgets/app_bottom_nav_bar.dart';
-import '../../../core/theme/app_theme.dart';
 import 'package:go_router/go_router.dart';
+import '../../../shared/widgets/app_bottom_nav_bar.dart';
+import '../widgets/camera_preview_widget.dart';
+import '../widgets/standard_item_widget.dart';
+import '../widgets/tip_item_widget.dart';
+import '../widgets/receipt_view_widget.dart';
 
 class UploadScreen extends StatefulWidget {
   const UploadScreen({super.key});
@@ -25,17 +28,6 @@ class _UploadScreenState extends State<UploadScreen> {
     'isGreen': 'true',
     'ecoProducts': '3',
   };
-
-  // Método para dibujar una esquina guía
-  Widget _buildCorner(CornerPosition position) {
-    return SizedBox(
-      width: 24,
-      height: 24,
-      child: CustomPaint(
-        painter: CornerPainter(position: position),
-      ),
-    );
-  }
 
   // Método para obtener imagen de la cámara
   Future<void> _getImageFromCamera() async {
@@ -81,13 +73,27 @@ class _UploadScreenState extends State<UploadScreen> {
   // Método simplificado para procesar la imagen (sin OCR)
   Future<void> _processImage(File imageFile) async {
     // Simular un breve tiempo de carga para mejorar UX
-    await Future.delayed(const Duration(seconds: 1));
-    
     setState(() {
-      _imageFile = imageFile;
-      _isLoading = false;
-      _uploadComplete = true;
+      _isLoading = true;
     });
+    
+    try {
+      // Aquí enviaríamos la imagen al servidor para su procesamiento
+      // y recibiríamos el resultado incluyendo un ID único de recibo
+      await Future.delayed(const Duration(seconds: 1));
+      
+      setState(() {
+        _imageFile = imageFile;
+        _isLoading = false;
+        _uploadComplete = true;
+        // En un caso real, los datos vendrían del servidor
+      });
+    } catch (error) {
+      setState(() {
+        _isLoading = false;
+        // Mostrar error
+      });
+    }
   }
 
   @override
@@ -107,8 +113,10 @@ class _UploadScreenState extends State<UploadScreen> {
         ),
         centerTitle: false,
       ),
+      // Si estamos mostrando resultados, no mostrar la barra de navegación
       body: _uploadComplete ? _buildResultsScreen() : _buildScanScreen(),
-      bottomNavigationBar: const AppBottomNavBar(currentIndex: 2),
+      // Solo mostrar la barra de navegación en la pantalla de subida inicial
+      bottomNavigationBar: _uploadComplete ? null : const AppBottomNavBar(currentIndex: 2),
     );
   }
 
@@ -119,68 +127,8 @@ class _UploadScreenState extends State<UploadScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Título y texto explicativo
-          const Text(
-            '¿Qué es un Recibo Verde?',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1C6734),
-            ),
-          ),
-          
-          const SizedBox(height: 8),
-          
-          // Explicación más clara con iconos
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFF9AE1B7).withOpacity(0.15),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: const Color(0xFF1C6734).withOpacity(0.2),
-                width: 1,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: const [
-                    Icon(
-                      Icons.eco_outlined,
-                      size: 18,
-                      color: Color(0xFF1C6734),
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      'Estándares para Recibo Verde',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                _buildStandardItem(
-                  'Más del 50% de productos eco-amigables',
-                  Icons.check_circle_outline,
-                ),
-                const SizedBox(height: 8),
-                _buildStandardItem(
-                  'Presencia de bolsas reutilizables',
-                  Icons.check_circle_outline,
-                ),
-                const SizedBox(height: 8),
-                _buildStandardItem(
-                  'Productos de temporada local',
-                  Icons.check_circle_outline,
-                ),
-              ],
-            ),
-          ),
+          // Información sobre recibos verdes con botón de info
+          _buildCompactGreenReceiptInfo(),
           
           const SizedBox(height: 24),
           
@@ -206,249 +154,221 @@ class _UploadScreenState extends State<UploadScreen> {
           
           const SizedBox(height: 16),
           
-          // Vista previa de la cámara con mejor diseño
-          Container(
-            width: double.infinity,
-            height: 320, // Altura reducida para dar más espacio a otros elementos
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: _imageFile != null
-                  ? Image.file(
-                      _imageFile!,
-                      fit: BoxFit.cover,
-                    )
-                  : Stack(
-                      children: [
-                        // Fondo decorativo con degradado
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.grey.withOpacity(0.1),
-                                Colors.grey.withOpacity(0.2),
-                              ],
-                            ),
-                          ),
-                        ),
-                        
-                        // Contenido centrado
-                        Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // Icono de cámara con fondo circular
-                              Container(
-                                width: 70,
-                                height: 70,
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF9AE1B7).withOpacity(0.2),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.camera_alt_outlined,
-                                  size: 35,
-                                  color: Color(0xFF1C6734),
-                                ),
-                              ),
-                              
-                              const SizedBox(height: 16),
-                              
-                              const Text(
-                                'Alinea tu recibo',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              
-                              const SizedBox(height: 8),
-                              
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 40),
-                                child: Text(
-                                  'Posiciona la factura dentro del marco',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black.withOpacity(0.7),
-                                  ),
-                                ),
-                              ),
-                              
-                              const SizedBox(height: 16),
-                              
-                              // Marco guía para la factura
-                              Container(
-                                width: 180,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: const Color(0xFF9AE1B7),
-                                    width: 2,
-                                    style: BorderStyle.solid,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    'Alinea aquí',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black.withOpacity(0.5),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        
-                        // Esquinas indicadoras
-                        Positioned(
-                          top: 40,
-                          left: 40,
-                          child: _buildCorner(CornerPosition.topLeft),
-                        ),
-                        Positioned(
-                          top: 40,
-                          right: 40,
-                          child: _buildCorner(CornerPosition.topRight),
-                        ),
-                        Positioned(
-                          bottom: 40,
-                          left: 40,
-                          child: _buildCorner(CornerPosition.bottomLeft),
-                        ),
-                        Positioned(
-                          bottom: 40,
-                          right: 40,
-                          child: _buildCorner(CornerPosition.bottomRight),
-                        ),
-                      ],
-                    ),
-            ),
-          ),
+          // Vista previa de la cámara
+          CameraPreviewWidget(imageFile: _imageFile),
           
           const SizedBox(height: 24),
           
           // Botones de acción
-          Row(
-            children: [
-              // Botón Galería
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: _isLoading ? null : _getImageFromGallery,
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: const BorderSide(color: Color(0xFF1C6734), width: 1.5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  icon: const Icon(
-                    Icons.photo_library_outlined,
-                    size: 20,
-                  ),
-                  label: const Text(
-                    'Galería',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-              
-              const SizedBox(width: 16),
-              
-              // Botón Capturar
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: _isLoading ? null : _getImageFromCamera,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 0,
-                  ),
-                  icon: _isLoading
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        )
-                      : const Icon(
-                          Icons.camera_alt_rounded,
-                          size: 20,
-                        ),
-                  label: Text(
-                    _isLoading ? 'Procesando...' : 'Capturar',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          _buildActionButtons(),
           
           const SizedBox(height: 24),
           
-          // Tips para mejorar el escaneo
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFF9AE1B7).withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          // Solo la advertencia sobre registro de recibos
+          _buildReceiptPolicyWarning(),
+        ],
+      ),
+    );
+  }
+
+  // Sección compacta de información sobre recibos verdes con botón de info
+  Widget _buildCompactGreenReceiptInfo() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
               children: [
+                const Icon(
+                  Icons.eco_outlined,
+                  size: 20,
+                  color: Color(0xFF1C6734),
+                ),
+                const SizedBox(width: 8),
                 const Text(
-                  'Tips para mejorar la foto',
+                  'Recibo Verde',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Color(0xFF1C6734),
                   ),
                 ),
-                const SizedBox(height: 12),
-                _buildTipItem(
-                  'Buena iluminación para mejores resultados',
-                  Icons.wb_sunny_outlined,
-                ),
-                const SizedBox(height: 8),
-                _buildTipItem(
-                  'Evita sombras sobre la factura',
-                  Icons.wb_shade,
-                ),
-                const SizedBox(height: 8),
-                _buildTipItem(
-                  'Mantén la factura plana y sin arrugas',
-                  Icons.crop_free,
-                ),
               ],
+            ),
+            GestureDetector(
+              onTap: () {
+                _showGreenReceiptStandardsDialog(context);
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1C6734).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Row(
+                  children: [
+                    Text(
+                      'Más info',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF1C6734),
+                      ),
+                    ),
+                    SizedBox(width: 2),
+                    Icon(
+                      Icons.info_outline,
+                      size: 14,
+                      color: Color(0xFF1C6734),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Los recibos verdes representan compras con menor impacto ambiental.',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.black.withOpacity(0.7),
+          ),
+        ),
+      ],
+    );
+  }
+  
+  // Widget para mostrar estándares de forma compacta
+  Widget _buildCompactStandard(String text, IconData icon) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+        decoration: BoxDecoration(
+          color: const Color(0xFF9AE1B7).withOpacity(0.15),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: const Color(0xFF1C6734),
+            ),
+            const SizedBox(width: 4),
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF1C6734),
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  // Diálogo para mostrar los estándares completos
+  void _showGreenReceiptStandardsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(
+              Icons.eco_outlined,
+              color: Color(0xFF1C6734),
+              size: 24,
+            ),
+            SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Estándares para Recibo Verde',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              StandardItemWidget(
+                text: 'Más del 50% de productos eco-amigables',
+                icon: Icons.check_circle_outline,
+              ),
+              const SizedBox(height: 12),
+              StandardItemWidget(
+                text: 'Presencia de bolsas reutilizables en vez de plástico',
+                icon: Icons.check_circle_outline,
+              ),
+              const SizedBox(height: 12),
+              StandardItemWidget(
+                text: 'Productos de temporada local con menor transporte',
+                icon: Icons.check_circle_outline,
+              ),
+              const SizedBox(height: 12),
+              StandardItemWidget(
+                text: 'Productos frescos en vez de ultraprocesados',
+                icon: Icons.check_circle_outline,
+              ),
+              const SizedBox(height: 12),
+              StandardItemWidget(
+                text: 'Empaques biodegradables o reciclables',
+                icon: Icons.check_circle_outline,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Entendido'),
+          ),
+        ],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        backgroundColor: Colors.white,
+      ),
+    );
+  }
+  
+  // Widget para mostrar solo la advertencia de política de recibos
+  Widget _buildReceiptPolicyWarning() {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.amber.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.amber.withOpacity(0.3),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.info_outline, size: 18, color: Colors.amber.shade800),
+          const SizedBox(width: 8),
+          const Expanded(
+            child: Text(
+              'Todos los recibos escaneados son analizados y contribuyen a tus estadísticas de impacto ambiental, para generar recomendaciones personalizadas.',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.black87,
+              ),
             ),
           ),
         ],
@@ -464,806 +384,197 @@ class _UploadScreenState extends State<UploadScreen> {
     final String date = _receiptData['date'] ?? 'Fecha no identificada';
     final String total = _receiptData['total'] ?? '0.00';
     final String ecoProducts = _receiptData['ecoProducts'] ?? '0';
-    
-    // Variable para controlar si se muestran las recomendaciones
-    bool _showRecommendations = false;
 
-    return StatefulBuilder(
-      builder: (context, setState) {
-        return SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Título de resultados
-              const Text(
-                'Resultados de la Subida',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              
-              const SizedBox(height: 20),
-              
-              // Vista previa de la imagen subida
-              if (_imageFile != null)
-                Container(
-                  height: 120, // Altura reducida para dar más espacio al recibo
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image.file(
-                      _imageFile!,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              
-              const SizedBox(height: 24),
-              
-              // Recibo Digital con formato de recibo físico
-              Card(
-                elevation: 0,
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Encabezado del recibo
-                      Center(
-                        child: Column(
-                          children: [
-                            Text(
-                              store.toUpperCase(),
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 8),
-                            const Text(
-                              'AV. JAVIER PRADO ESTE 123, SAN BORJA',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 4),
-                            const Text(
-                              'RUC: 20123456789',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 4),
-                            const Text(
-                              'BOLETA DE VENTA ELECTRÓNICA',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 4),
-                            const Text(
-                              'B007-00123456',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Fecha: $date    Hora: 15:30',
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      // Línea divisoria con estilo de recibo
-                      const Center(child: Text('-------------------------------------', style: TextStyle(fontSize: 14, letterSpacing: -0.5, height: 0.5))),
-                      const SizedBox(height: 16),
-                      
-                      // Encabezados de la tabla de productos
-                      Row(
-                        children: const [
-                          Expanded(
-                            flex: 5,
-                            child: Text(
-                              'DESCRIPCIÓN',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              'CANT',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              'PRECIO',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.right,
-                            ),
-                          ),
-                          SizedBox(width: 8),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              'CO₂',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.right,
-                            ),
-                          ),
-                        ],
-                      ),
-                      
-                      const SizedBox(height: 12),
-                      
-                      // Productos del recibo con su huella de carbono
-                      _buildReceiptItem('MANZANA NACIONAL', 0.750, 7.90, 0.3, true),
-                      _buildReceiptItem('PLATANO ORGANICO', 1.000, 5.50, 0.2, true),
-                      _buildReceiptItem('LECHE DESLAC X 1L', 2, 5.90, 1.8),
-                      _buildReceiptItem('PAN INTEGRAL', 1, 8.90, 0.5, true),
-                      _buildReceiptItem('HAMBURGUESA CARNE', 1, 15.90, 2.1),
-                      _buildReceiptItem('PAPEL TOALLA ECO', 1, 12.50, 0.6, true),
-                      _buildReceiptItem('DETERGENTE REGULAR', 1, 18.90, 1.1),
-                      
-                      const SizedBox(height: 16),
-                      // Línea divisoria
-                      const Center(child: Text('-------------------------------------', style: TextStyle(fontSize: 14, letterSpacing: -0.5, height: 0.5))),
-                      const SizedBox(height: 16),
-                      
-                      // Totales
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'SUBTOTAL:',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'S/ ${(double.parse(total) * 0.82).toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'IGV (18%):',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'S/ ${(double.parse(total) * 0.18).toStringAsFixed(2)}',
-                            style: const TextStyle(
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'TOTAL:',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'S/ $total',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      
-                      const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'TOTAL CO₂:',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            '$co2 Kg',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: isGreen ? const Color(0xFF1C6734) : Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      // Línea divisoria
-                      const Center(child: Text('-------------------------------------', style: TextStyle(fontSize: 14, letterSpacing: -0.5, height: 0.5))),
-                      const SizedBox(height: 16),
-                      
-                      // Método de pago y últimos 4 dígitos
-                      const Center(
-                        child: Text(
-                          'VISA ****3456',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Productos Eco-amigables: ',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            '$ecoProducts/7',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: isGreen ? const Color(0xFF1C6734) : Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      
-                      // Etiqueta de recibo verde
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: isGreen
-                              ? const Color(0xFF9AE1B7).withOpacity(0.2)
-                              : Colors.grey.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              isGreen ? Icons.eco_outlined : Icons.receipt_outlined,
-                              color: isGreen ? const Color(0xFF1C6734) : Colors.grey,
-                              size: 18,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              isGreen ? 'Recibo Verde' : 'Recibo Regular',
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: isGreen ? const Color(0xFF1C6734) : Colors.grey,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      
-                      // Botón de ver recomendaciones
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            setState(() {
-                              _showRecommendations = !_showRecommendations;
-                            });
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF1C6734),
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            elevation: 0,
-                          ),
-                          icon: Icon(
-                            _showRecommendations ? Icons.visibility_off_outlined : Icons.eco_outlined,
-                            size: 18,
-                          ),
-                          label: Text(
-                            _showRecommendations ? 'Ocultar recomendaciones' : 'Ver recomendaciones eco',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                      
-                      // Sección de recomendaciones (visible solo cuando se hace clic)
-                      if (_showRecommendations)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 20),
-                            const Text(
-                              'Alternativas de baja huella de carbono',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF1C6734),
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            
-                            _buildRecommendationItem(
-                              'Leche vegetal',
-                              'Alternativa a Leche deslac',
-                              '0.5 Kg de CO₂ (vs 1.8)',
-                              Icons.trending_down,
-                            ),
-                            
-                            const SizedBox(height: 10),
-                            
-                            _buildRecommendationItem(
-                              'Hamburguesa vegetal',
-                              'Alternativa a Hamburguesa de carne',
-                              '0.4 Kg de CO₂ (vs 2.1)',
-                              Icons.trending_down,
-                            ),
-                            
-                            const SizedBox(height: 10),
-                            
-                            _buildRecommendationItem(
-                              'Detergente ecológico',
-                              'Alternativa a Detergente regular',
-                              '0.3 Kg de CO₂ (vs 1.1)',
-                              Icons.trending_down,
-                            ),
-                            
-                            const SizedBox(height: 12),
-                            
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF9AE1B7).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8),
-                                border: Border.all(
-                                  color: const Color(0xFF1C6734).withOpacity(0.2),
-                                ),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
-                                    'Ahorro potencial de CO₂:',
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    '3.2 Kg de CO₂ (53% menos)',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF1C6734),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-              
-              const SizedBox(height: 24),
-              
-              // Ingreso de datos adicionales
-              Card(
-                elevation: 0,
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Datos adicionales',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      
-                      // Form fields
-                      const TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Notas para esta compra',
-                          hintText: 'Ej: Compra semanal, productos para la oficina',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              
-              const SizedBox(height: 32),
-              
-              // Botones de acción
-              Row(
-                children: [
-                  // Botón para subir otro recibo
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          _uploadComplete = false;
-                          _imageFile = null;
-                        });
-                      },
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        side: const BorderSide(color: Color(0xFF1C6734), width: 1.5),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                      ),
-                      icon: const Icon(Icons.refresh),
-                      label: const Text(
-                        'Nueva Foto',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                  
-                  const SizedBox(width: 16),
-                  
-                  // Botón para guardar resultados
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        // Navegar a la pantalla de historial
-                        context.go('/history');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        elevation: 0,
-                      ),
-                      icon: const Icon(
-                        Icons.check_circle_outline,
-                        size: 20,
-                      ),
-                      label: const Text(
-                        'Guardar',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Título de resultados
+          const Text(
+            'Tu compra ha sido analizada',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          
+          const SizedBox(height: 20),
+          
+          // Vista previa de la imagen subida
+          if (_imageFile != null)
+            Container(
+              height: 120,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-  
-  // Widget para crear un elemento de recibo
-  Widget _buildReceiptItem(String description, dynamic quantity, double price, double co2, [bool isEco = false]) {
-    final total = quantity is int ? quantity * price : (quantity * price).toStringAsFixed(2);
-    
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Descripción del producto
-          Expanded(
-            flex: 5,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (isEco)
-                  const Padding(
-                    padding: EdgeInsets.only(right: 4),
-                    child: Icon(
-                      Icons.eco_outlined,
-                      size: 12,
-                      color: Color(0xFF1C6734),
-                    ),
-                  ),
-                Expanded(
-                  child: Text(
-                    description,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: isEco ? const Color(0xFF1C6734) : Colors.black,
-                      fontWeight: isEco ? FontWeight.w500 : FontWeight.normal,
-                    ),
-                  ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.file(
+                  _imageFile!,
+                  fit: BoxFit.cover,
                 ),
-              ],
-            ),
-          ),
-          // Cantidad
-          Expanded(
-            flex: 2,
-            child: Text(
-              quantity is int ? '$quantity' : quantity.toStringAsFixed(3),
-              style: const TextStyle(
-                fontSize: 12,
               ),
-              textAlign: TextAlign.center,
             ),
+          
+          const SizedBox(height: 24),
+          
+          // Recibo Digital con formato de recibo físico
+          ReceiptViewWidget(
+            store: store,
+            date: date,
+            total: total,
+            co2: co2,
+            ecoProducts: ecoProducts,
+            isGreen: isGreen,
           ),
-          // Precio unitario y total
-          Expanded(
-            flex: 2,
-            child: Text(
-              'S/ $total',
-              style: const TextStyle(
-                fontSize: 12,
-              ),
-              textAlign: TextAlign.right,
-            ),
-          ),
-          const SizedBox(width: 8),
-          // CO2
-          Expanded(
-            flex: 2,
-            child: Text(
-              '$co2 Kg',
-              style: TextStyle(
-                fontSize: 12,
-                color: isEco ? const Color(0xFF1C6734) : co2 > 1.0 ? Colors.red.shade700 : Colors.black,
-                fontWeight: co2 > 1.0 ? FontWeight.w500 : FontWeight.normal,
-              ),
-              textAlign: TextAlign.right,
-            ),
-          ),
+          
+          const SizedBox(height: 32),
+          
+          // Único botón para volver
+          _buildResultActionButtons(),
         ],
       ),
     );
   }
-  
-  // Widget para crear un elemento de recomendación
-  Widget _buildRecommendationItem(String title, String subtitle, String savings, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: const Color(0xFF9AE1B7),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: const Color(0xFF9AE1B7).withOpacity(0.2),
-              shape: BoxShape.circle,
+
+  Widget _buildActionButtons() {
+    return Row(
+      children: [
+        // Botón Galería
+        Expanded(
+          child: OutlinedButton.icon(
+            onPressed: _isLoading ? null : _getImageFromGallery,
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              side: const BorderSide(color: Color(0xFF1C6734), width: 1.5),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
             ),
-            child: Icon(
-              icon,
+            icon: const Icon(
+              Icons.photo_library_outlined,
               size: 20,
-              color: const Color(0xFF1C6734),
+            ),
+            label: const Text(
+              'Galería',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1C6734),
+        ),
+        
+        const SizedBox(width: 16),
+        
+        // Botón Capturar
+        Expanded(
+          child: ElevatedButton.icon(
+            onPressed: _isLoading ? null : _getImageFromCamera,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              elevation: 0,
+            ),
+            icon: _isLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  )
+                : const Icon(
+                    Icons.camera_alt_rounded,
+                    size: 20,
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.black.withOpacity(0.7),
-                  ),
-                ),
-              ],
+            label: Text(
+              _isLoading ? 'Procesando...' : 'Capturar',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-          const SizedBox(width: 8),
-          Text(
-            savings,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1C6734),
-            ),
+        ),
+      ],
+    );
+  }
+
+  // Cambiar el método _buildResultActionButtons() por un botón único
+  Widget _buildResultActionButtons() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        onPressed: () {
+          // Aquí podemos registrar que el usuario vio los resultados
+          // y luego guardarlos automáticamente
+          
+          // Guardar los resultados en el backend
+          _saveReceiptToServer();
+          
+          // Volver a la pantalla inicial
+          setState(() {
+            _uploadComplete = false;
+            _imageFile = null;
+          });
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.black,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-        ],
+          elevation: 0,
+        ),
+        icon: const Icon(Icons.arrow_back, size: 20),
+        label: const Text(
+          'Volver',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
     );
   }
 
-  // Widget para crear un elemento de tip
-  Widget _buildTipItem(String text, IconData icon) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 18,
-          color: const Color(0xFF1C6734),
+  // Agregar método para guardar el recibo en el servidor
+  Future<void> _saveReceiptToServer() async {
+    try {
+      // Simulamos una llamada a la API para guardar el recibo
+      await Future.delayed(const Duration(milliseconds: 300));
+      
+      // Aquí se enviarían los datos del recibo al backend
+      // El recibo ya habría sido analizado durante el procesamiento inicial
+      
+      // Podríamos mostrar un pequeño mensaje de confirmación
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Recibo guardado correctamente'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Color(0xFF1C6734),
         ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 13,
-              color: Colors.black,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // Widget para crear un elemento de estándar
-  Widget _buildStandardItem(String text, IconData icon) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 16,
-          color: const Color(0xFF1C6734),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            text,
-            style: const TextStyle(
-              fontSize: 13,
-              color: Colors.black,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// Enum para las posiciones de las esquinas
-enum CornerPosition { topLeft, topRight, bottomLeft, bottomRight }
-
-// Painter personalizado para dibujar las esquinas guía
-class CornerPainter extends CustomPainter {
-  final CornerPosition position;
-  
-  CornerPainter({required this.position});
-  
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color(0xFF9AE1B7)
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-    
-    const length = 10.0;
-    
-    switch (position) {
-      case CornerPosition.topLeft:
-        canvas.drawLine(const Offset(0, 0), const Offset(length, 0), paint);
-        canvas.drawLine(const Offset(0, 0), const Offset(0, length), paint);
-        break;
-      case CornerPosition.topRight:
-        canvas.drawLine(Offset(size.width - length, 0), Offset(size.width, 0), paint);
-        canvas.drawLine(Offset(size.width, 0), Offset(size.width, length), paint);
-        break;
-      case CornerPosition.bottomLeft:
-        canvas.drawLine(Offset(0, size.height), Offset(length, size.height), paint);
-        canvas.drawLine(Offset(0, size.height - length), Offset(0, size.height), paint);
-        break;
-      case CornerPosition.bottomRight:
-        canvas.drawLine(Offset(size.width - length, size.height), Offset(size.width, size.height), paint);
-        canvas.drawLine(Offset(size.width, size.height - length), Offset(size.width, size.height), paint);
-        break;
+      );
+    } catch (error) {
+      // Manejar error al guardar
+      debugPrint('Error al guardar recibo: $error');
     }
-  }
-  
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
   }
 }
