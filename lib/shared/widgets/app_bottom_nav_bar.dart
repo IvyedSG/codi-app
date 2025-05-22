@@ -111,7 +111,9 @@ class AppBottomNavBar extends StatelessWidget {
             children: [
               // Si es el icono de perfil, mostramos la imagen con borde del color activo
               if (isProfileImage)
-                Container(
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOutCubic,
                   width: containerSize,
                   height: containerSize,
                   decoration: BoxDecoration(
@@ -126,7 +128,9 @@ class AppBottomNavBar extends StatelessWidget {
                   ),
                 )
               else
-                Container(
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOutCubic,
                   height: containerSize,
                   width: containerSize,
                   decoration: BoxDecoration(
@@ -140,13 +144,14 @@ class AppBottomNavBar extends StatelessWidget {
                   ),
                 ),
               SizedBox(height: spacing),
-              Text(
-                label,
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 300),
                 style: TextStyle(
                   fontSize: fontSize,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                   color: color,
                 ),
+                child: Text(label),
               ),
             ],
           ),
@@ -177,17 +182,11 @@ class AppBottomNavBar extends StatelessWidget {
     }
   }
 
-  // Método de navegación corregido
+  // Método de navegación que realiza la transición instantánea
   void navigateTo(String route) {
     BuildContext? context = navigatorKey.currentContext;
     if (context != null) {
-      // Evitar navegación innecesaria comparando con currentIndex
-      // No tratamos de acceder a location que no existe en esta versión de go_router
-      
-      // Usar Future.microtask para mejorar rendimiento de navegación
-      Future.microtask(() {
-        GoRouter.of(context).go(route);
-      });
+      GoRouter.of(context).go(route);
     }
   }
 }

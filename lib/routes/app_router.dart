@@ -30,100 +30,34 @@ class AppRouter {
     routes: [
       GoRoute(
         path: '/login',
-        pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const LoginScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: CurveTween(curve: Curves.easeOutQuint).animate(animation),
-              child: child,
-            );
-          },
-          transitionDuration: const Duration(milliseconds: 200),
-        ),
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: '/register',
-        pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: const RegisterScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: CurveTween(curve: Curves.easeOutQuint).animate(animation),
-              child: child,
-            );
-          },
-        ),
+        builder: (context, state) => const RegisterScreen(),
       ),
       GoRoute(
         path: '/home',
-        pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: _cachedHomeScreen,
-          transitionsBuilder: _buildTransition,
-          transitionDuration: const Duration(milliseconds: 200),
-        ),
+        builder: (context, state) => _cachedHomeScreen,
       ),
       GoRoute(
         path: '/history',
-        pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: _cachedHistoryScreen,
-          transitionsBuilder: _buildTransition,
-          transitionDuration: const Duration(milliseconds: 200),
-        ),
+        builder: (context, state) => _cachedHistoryScreen,
       ),
       GoRoute(
         path: '/upload',
-        pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: _cachedUploadScreen,
-          transitionsBuilder: _buildTransition,
-          transitionDuration: const Duration(milliseconds: 200),
-        ),
+        builder: (context, state) => _cachedUploadScreen,
       ),
       GoRoute(
         path: '/profile',
-        pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: _cachedProfileScreen,
-          transitionsBuilder: _buildTransition,
-          transitionDuration: const Duration(milliseconds: 200),
-        ),
+        builder: (context, state) => _cachedProfileScreen,
       ),
       GoRoute(
         path: '/promos',
-        pageBuilder: (context, state) => CustomTransitionPage(
-          key: state.pageKey,
-          child: _cachedPromoScreen,
-          transitionsBuilder: _buildTransition,
-          transitionDuration: const Duration(milliseconds: 200),
-        ),
+        builder: (context, state) => _cachedPromoScreen,
       ),
     ],
   );
-  
-  // Método compartido para transiciones entre pantallas
-  static Widget _buildTransition(context, animation, secondaryAnimation, child) {
-    const curve = Curves.easeOutCubic;
-    
-    // Transición suave de fade con un ligero efecto de escala
-    return FadeTransition(
-      opacity: animation.drive(CurveTween(curve: curve)),
-      child: ScaleTransition(
-        scale: Tween<double>(
-          begin: 0.98, 
-          end: 1.0,
-        ).animate(
-          CurvedAnimation(
-            parent: animation,
-            curve: curve,
-          ),
-        ),
-        child: child,
-      ),
-    );
-  }
 }
 
 // Ejemplo para HomeScreen

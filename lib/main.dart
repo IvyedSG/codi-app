@@ -38,6 +38,23 @@ void main() {
   runApp(const MyApp());
 }
 
+// Clase para transiciones instantáneas
+class InstantPageTransitionsBuilder extends PageTransitionsBuilder {
+  const InstantPageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    // Simplemente devolver el child sin animaciones
+    return child;
+  }
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -49,11 +66,12 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFEEF6F6), 
         pageTransitionsTheme: PageTransitionsTheme(
           builders: {
-            TargetPlatform.android: SmoothPageTransitionsBuilder(),
-            TargetPlatform.iOS: SmoothPageTransitionsBuilder(),
-            TargetPlatform.linux: SmoothPageTransitionsBuilder(),
-            TargetPlatform.macOS: SmoothPageTransitionsBuilder(),
-            TargetPlatform.windows: SmoothPageTransitionsBuilder(),
+            // Usar transiciones instantáneas para todas las plataformas
+            TargetPlatform.android: InstantPageTransitionsBuilder(),
+            TargetPlatform.iOS: InstantPageTransitionsBuilder(),
+            TargetPlatform.linux: InstantPageTransitionsBuilder(),
+            TargetPlatform.macOS: InstantPageTransitionsBuilder(),
+            TargetPlatform.windows: InstantPageTransitionsBuilder(),
           },
         ),
       ),
@@ -61,11 +79,11 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: const Color(0xFFEEF6F6),
         pageTransitionsTheme: PageTransitionsTheme(
           builders: {
-            TargetPlatform.android: SmoothPageTransitionsBuilder(),
-            TargetPlatform.iOS: SmoothPageTransitionsBuilder(),
-            TargetPlatform.linux: SmoothPageTransitionsBuilder(),
-            TargetPlatform.macOS: SmoothPageTransitionsBuilder(),
-            TargetPlatform.windows: SmoothPageTransitionsBuilder(),
+            TargetPlatform.android: InstantPageTransitionsBuilder(),
+            TargetPlatform.iOS: InstantPageTransitionsBuilder(),
+            TargetPlatform.linux: InstantPageTransitionsBuilder(),
+            TargetPlatform.macOS: InstantPageTransitionsBuilder(),
+            TargetPlatform.windows: InstantPageTransitionsBuilder(),
           },
         ),
       ),
@@ -80,49 +98,6 @@ class MyApp extends StatelessWidget {
           child: child!,
         );
       },
-    );
-  }
-}
-
-// Clase para transiciones suaves mejoradas con efecto horizontal sutil
-class SmoothPageTransitionsBuilder extends PageTransitionsBuilder {
-  const SmoothPageTransitionsBuilder();
-
-  @override
-  Widget buildTransitions<T>(
-    PageRoute<T> route,
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
-  ) {
-    // Para rutas directas, usar solo fade sin desplazamiento
-    if (route.settings.name?.startsWith('/') == true) {
-      return FadeTransition(
-        opacity: animation.drive(
-          CurveTween(curve: Curves.easeOut),
-        ),
-        child: child,
-      );
-    }
-    
-    // Transición suave con fade y ligero efecto de escala
-    return FadeTransition(
-      opacity: animation.drive(
-        CurveTween(curve: Curves.easeOutCubic),
-      ),
-      child: ScaleTransition(
-        scale: Tween<double>(
-          begin: 0.98, 
-          end: 1.0,
-        ).animate(
-          CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeOutCubic,
-          ),
-        ),
-        child: child,
-      ),
     );
   }
 }
