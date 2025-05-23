@@ -27,6 +27,10 @@ class _AllPromosScreenState extends State<AllPromosScreen> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
+
+    // Obtenemos los valores de la zona segura inferior
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return Scaffold(
       backgroundColor: const Color(0xFFEEF6F6),
       appBar: AppBar(
@@ -57,11 +61,7 @@ class _AllPromosScreenState extends State<AllPromosScreen> with SingleTickerProv
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.eco_outlined,
-                  size: 16,
-                  color: Color(0xFF1C6734),
-                ),
+                Icon(Icons.eco_outlined, size: 16, color: Color(0xFF1C6734)),
                 SizedBox(width: 4),
                 Text(
                   '7 recibos',
@@ -76,47 +76,64 @@ class _AllPromosScreenState extends State<AllPromosScreen> with SingleTickerProv
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // Tabs rediseñados sin línea negra
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            height: 44,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(22),
-            ),
-            child: TabBar(
-              controller: _tabController,
-              indicator: BoxDecoration(
+      // Usamos SafeArea para respetar las zonas seguras del dispositivo
+      body: SafeArea(
+        bottom: false, // Gestionaremos el padding inferior manualmente
+        child: Column(
+          children: [
+            // Tabs rediseñados sin línea negra
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              height: 44,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(22),
-                color: Colors.black,
               ),
-              labelColor: Colors.white,
-              unselectedLabelColor: Colors.black,
-              indicatorSize: TabBarIndicatorSize.tab,
-              dividerColor: Colors.transparent, // Elimina la línea divisoria
-              indicatorPadding: EdgeInsets.zero,
-              tabs: _filters.map((String filter) {
-                return Tab(
-                  text: filter,
-                );
-              }).toList(),
+              child: TabBar(
+                controller: _tabController,
+                indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(22),
+                  color: Colors.black,
+                ),
+                labelColor: Colors.white,
+                unselectedLabelColor: Colors.black,
+                indicatorSize: TabBarIndicatorSize.tab,
+                dividerColor: Colors.transparent, // Elimina la línea divisoria
+                indicatorPadding: EdgeInsets.zero,
+                tabs:
+                    _filters.map((String filter) {
+                      return Tab(text: filter);
+                    }).toList(),
+              ),
             ),
-          ),
-          // Contenido de los tabs
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                _buildAllPromosTab(),
-                _buildGreenReceiptsTab(),
-                _buildByStoreTab(),
-                _buildFilterTab(),
-              ],
+            // Contenido de los tabs
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildSafeScrollView(_buildAllPromosTab(), bottomPadding),
+                  _buildSafeScrollView(_buildGreenReceiptsTab(), bottomPadding),
+                  _buildSafeScrollView(_buildByStoreTab(), bottomPadding),
+                  _buildFilterTabWithSafeArea(bottomPadding),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Nuevo método para envolver los tabs con scroll en contenedores seguros
+  Widget _buildSafeScrollView(Widget content, double bottomPadding) {
+    return Container(
+      color: const Color(0xFFEEF6F6),
+      child: Padding(
+        // Añadimos padding inferior para evitar que el contenido quede bajo los controles del sistema
+        padding: EdgeInsets.only(
+          bottom: bottomPadding > 0 ? bottomPadding : 16,
+        ),
+        child: content,
       ),
     );
   }
@@ -314,103 +331,138 @@ class _AllPromosScreenState extends State<AllPromosScreen> with SingleTickerProv
     );
   }
   
-  // Nueva pestaña de filtrado
-  Widget _buildFilterTab() {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Filtrar promociones',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+  // Versión modificada del tab de filtros para respetar el área segura
+  // ...existing code...
+
+  Widget _buildFilterTabWithSafeArea(double bottomPadding) {
+    return Container(
+      color: const Color(0xFFEEF6F6),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 16),
+            const Text(
+              'Filtrar promociones',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
-          ),
-          SizedBox(height: 24),
-          
-          // Filtros por tipo de promoción
-          _buildFilterSection(
-            'Tipo de promoción',
-            ['Descuento', 'Producto gratis', '2x1', 'Vale de compra', 'Talleres']
-          ),
-          
-          SizedBox(height: 20),
-          
-          // Filtros por cantidad de recibos
-          _buildFilterSection(
-            'Cantidad de recibos necesarios',
-            ['1-3 recibos', '4-7 recibos', '8-15 recibos', 'Sin recibos']
-          ),
-          
-          SizedBox(height: 20),
-          
-          // Filtros por establecimiento
-          _buildFilterSection(
-            'Establecimiento',
-            ['Supermercados', 'Tiendas Eco', 'Cafeterías', 'Otros']
-          ),
-          
-          SizedBox(height: 20),
-          
-          // Filtros por vigencia
-          _buildFilterSection(
-            'Vigencia',
-            ['Esta semana', 'Este mes', 'Permanentes']
-          ),
-          
-          Spacer(),
-          
-          // Botones de acción
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {},
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.black),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: Text(
-                    'Limpiar filtros',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+            const SizedBox(height: 24),
+
+            // Wrap con Expanded pero con flex menor para que ocupe menos espacio
+            Expanded(
+              flex: 1, // Valor estándar
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Filtros por tipo de promoción
+                    _buildFilterSection('Tipo de promoción', [
+                      'Descuento',
+                      'Producto gratis',
+                      '2x1',
+                      'Vale de compra',
+                      'Talleres',
+                    ]),
+
+                    const SizedBox(height: 20),
+
+                    // Filtros por cantidad de recibos
+                    _buildFilterSection('Cantidad de recibos necesarios', [
+                      '1-3 recibos',
+                      '4-7 recibos',
+                      '8-15 recibos',
+                      'Sin recibos',
+                    ]),
+
+                    const SizedBox(height: 20),
+
+                    // Filtros por establecimiento
+                    _buildFilterSection('Establecimiento', [
+                      'Supermercados',
+                      'Tiendas Eco',
+                      'Cafeterías',
+                      'Otros',
+                    ]),
+
+                    const SizedBox(height: 20),
+
+                    // Filtros por vigencia
+                    _buildFilterSection('Vigencia', [
+                      'Esta semana',
+                      'Este mes',
+                      'Permanentes',
+                    ]),
+
+                    // Agregamos un espacio adicional al final para separación
+                    const SizedBox(height: 50),
+                  ],
                 ),
               ),
-              SizedBox(width: 16),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: Text(
-                    'Aplicar filtros',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
+            ),
+
+            // Contenedor fijo para botones con más espacio respecto a la barra inferior
+            Container(
+              width: double.infinity,
+              // Elevamos los botones con más padding respecto a la barra de navegación
+              margin: EdgeInsets.only(
+                bottom: bottomPadding > 0 ? bottomPadding + 16 : 30,
               ),
-            ],
-          ),
-        ],
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {},
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Colors.black),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: const Text(
+                        'Limpiar filtros',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: const Text(
+                        'Aplicar filtros',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
+
+  // ...existing code...
   
   // Widgets específicos para cada sección
   
