@@ -39,6 +39,7 @@ dependencies:
   flutter_animate: ^4.5.2
   image_picker: ^1.1.2
   path_provider: ^2.1.5
+  flutter_secure_storage: ^9.2.4
 
 dev_dependencies:
   flutter_test:

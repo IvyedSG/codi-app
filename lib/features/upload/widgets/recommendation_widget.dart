@@ -57,12 +57,11 @@ class RecommendationItem extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
-                        fontSize: 13,
+                        fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1C6734),
                       ),
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2, // Limitar a 2 líneas
+                      overflow: TextOverflow.ellipsis, // Mostrar ellipsis si no cabe
                     ),
                     const SizedBox(height: 4),
                     Text(

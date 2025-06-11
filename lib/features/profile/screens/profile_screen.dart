@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/app_bottom_nav_bar.dart';
 import '../../../shared/widgets/animated_page_transition.dart';
+import '../../auth/services/auth_service.dart';
+import '../../auth/models/user_model.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -11,9 +13,40 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  // Mock user data - in a real app this would come from a user service
-  String userName = "Juan Pérez";
-  String userEmail = "juan.perez@gmail.com";
+  // Agregar servicio de autenticación
+  final AuthService _authService = AuthService();
+  
+  // Agregar información de usuario
+  String userName = 'Cargando...';
+  String userEmail = 'Cargando...';
+  
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+  
+  // Método para cargar datos del usuario
+  Future<void> _loadUserData() async {
+    try {
+      final user = await _authService.getUser();
+      if (user != null) {
+        setState(() {
+          userName = user.nombre;
+          userEmail = user.correo;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error cargando datos: $e');
+    }
+  }
+  
+  Future<void> _logout() async {
+    await _authService.logout();
+    if (mounted) {
+      context.go('/login');
+    }
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -84,24 +117,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
         padding: const EdgeInsets.all(20.0),
         child: Row(
           children: [
-            // Foto de perfil
+            // Parte izquierda: Avatar
             Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
+              width: 70,
+              height: 70,
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: const Color(0xFF9AE1B7),
-                  width: 3,
-                ),
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/foto.jpg'),
-                  fit: BoxFit.cover,
+                color: Color(0xFFE0EFED),
+              ),
+              child: const Center(
+                child: Icon(
+                  Icons.person,
+                  size: 36,
+                  color: Color(0xFF1C6734),
                 ),
               ),
             ),
-            const SizedBox(width: 20),
-            // Información del usuario
+            const SizedBox(width: 16),
+            
+            // Parte derecha: Info del usuario
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,7 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Text(
                     userName,
                     style: const TextStyle(
-                      fontSize: 22,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
@@ -117,9 +151,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 4),
                   Text(
                     userEmail,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
-                      color: Colors.black.withOpacity(0.7),
+                      color: Colors.black54,
                     ),
                   ),
                 ],
@@ -271,7 +305,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             textColor: Colors.red,
             iconColor: Colors.red,
             onTap: () {
-              context.go('/login');
+              _logout();
             },
           ),
         ],

@@ -49,5 +49,9 @@
     <string>Esta app necesita acceso a la cámara para escanear recibos</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Esta app necesita acceso a la galería para seleccionar recibos</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+    <key>NSAllowsLocalNetworking</key>
+    <true/>
 </dict>
 </plist>

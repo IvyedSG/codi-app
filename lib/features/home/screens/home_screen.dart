@@ -6,9 +6,34 @@ import '../widgets/co2_card.dart';
 import '../widgets/last_receipt_card.dart';
 import '../widgets/offer_card.dart';
 import '../widgets/green_receipts_card.dart';
+import '../../auth/services/auth_service.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final AuthService _authService = AuthService();
+  String _userName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserName();
+  }
+
+  Future<void> _loadUserName() async {
+    final name = await _authService.getUserName();
+    if (name != null && mounted) {
+      setState(() {
+        // Extraer primer nombre para un saludo más amigable
+        _userName = name.split(' ')[0];
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +42,9 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: const Color(0xFFEEF6F6), // Color #EEF6F6
         elevation: 0,
-        title: const Text(
-          'Inicio',
-          style: TextStyle(
+        title: Text(
+          _userName.isNotEmpty ? 'Hola, $_userName' : 'Bienvenido a Codi',
+          style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
             color: Colors.black,

@@ -66,35 +66,39 @@ class CO2Card extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            // Objetivo
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-              decoration: BoxDecoration(
-                color: Colors.green.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Objetivo: ',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w500,
-                    ),
+            // Objetivo - Corregido con FittedBox para evitar overflow
+            if (showObjective)
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 6), // Reducido el padding horizontal
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Objetivo: ',
+                        style: TextStyle(
+                          fontSize: 12, // Reducido de 13 a 12
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        '150 Kg',
+                        style: TextStyle(
+                          fontSize: 12, // Reducido de 13 a 12
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    '150 Kg',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
           ],
         ),
       ),

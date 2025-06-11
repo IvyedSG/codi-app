@@ -206,7 +206,7 @@ class PromosScreen extends StatelessWidget {
   // Banner principal
   Widget _buildMainPromoBanner(BuildContext context) {
     return Container(
-      height: 220, // Increased height to accommodate content
+      height: 240, // Aumentado de 220 a 240 para dar más espacio
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -254,7 +254,7 @@ class PromosScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween, // Para mejor distribución vertical
                 mainAxisSize: MainAxisSize.min, // Added to prevent overflow
                 children: [
                   Row(
@@ -299,8 +299,8 @@ class PromosScreen extends StatelessWidget {
                       color: Colors.black87,
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  Container(
+                  const SizedBox(height: 16), // Reducido de 20 a 16
+                  SizedBox(
                     width: 140,
                     height: 44,
                     child: ElevatedButton(
@@ -415,14 +415,14 @@ class PromosScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0), // Adjusted padding
+        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0), // Reducido de 16 a 12
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center, // Ensure vertical alignment
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Contenedor del icono con fondo verde
             Container(
-              width: 45, // Slightly smaller
-              height: 45, // Slightly smaller
+              width: 40, // Reducido de 45 a 40
+              height: 40, // Reducido de 45 a 40
               decoration: BoxDecoration(
                 color: const Color(0xFF9AE1B7).withOpacity(0.2),
                 shape: BoxShape.circle,
@@ -430,12 +430,12 @@ class PromosScreen extends StatelessWidget {
               child: Center(
                 child: Icon(
                   icon,
-                  size: 24, // Smaller icon
+                  size: 20, // Reducido de 24 a 20
                   color: const Color(0xFF1C6734),
                 ),
               ),
             ),
-            const SizedBox(width: 12), // Slightly smaller spacing
+            const SizedBox(width: 10), // Reducido de 12 a 10
             // Textos
             Expanded(
               child: Column(
@@ -444,18 +444,21 @@ class PromosScreen extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        receipts,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                      Flexible(
+                        child: Text(
+                          receipts,
+                          style: const TextStyle(
+                            fontSize: 15, // Reducido de 16 a 15
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 6), // Reducido de 8 a 6
                       Icon(
                         Icons.eco_outlined,
-                        size: 16,
+                        size: 14, // Reducido de 16 a 14
                         color: const Color(0xFF1C6734),
                       ),
                     ],
@@ -464,20 +467,20 @@ class PromosScreen extends StatelessWidget {
                   Text(
                     description,
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: 13, // Reducido de 14 a 13
                       color: Colors.black.withOpacity(0.7),
                     ),
-                    maxLines: 2, // Limit lines to prevent overflow
-                    overflow: TextOverflow.ellipsis, // Handle text overflow
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: 8), // Reduced spacing
+            const SizedBox(width: 6), // Reducido de 8 a 6
             // Botón de canjear
             SizedBox(
-              width: 80, // Fixed width
-              height: 36,
+              width: 70, // Reducido de 80 a 70
+              height: 32, // Reducido de 36 a 32
               child: ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
@@ -487,13 +490,13 @@ class PromosScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  padding: EdgeInsets.zero, // Remove padding to fit text
+                  padding: EdgeInsets.zero,
                 ),
                 child: const Text(
                   'Canjear',
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
-                    fontSize: 14,
+                    fontSize: 12, // Reducido de 14 a 12
                   ),
                 ),
               ),
@@ -540,6 +543,8 @@ class PromosScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
+                    maxLines: 1, // Limitar a 1 línea
+                    overflow: TextOverflow.ellipsis, // Mostrar ellipsis si no cabe
                   ),
                   const SizedBox(height: 4),
                   Text(

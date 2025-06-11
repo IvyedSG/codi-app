@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_constants.dart';
 import '../../../core/theme/app_theme.dart';
+import '../services/auth_service.dart'; // Import the auth service
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _isLoading = false;
   bool _obscurePassword = true;
+  final AuthService _authService = AuthService(); // Add the auth service instance
 
   @override
   void dispose() {
@@ -24,23 +26,37 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _login() {
+  Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
       });
 
-      // Simulate login process
-      Future.delayed(AppConstants.mediumAnimationDuration, () {
-        setState(() {
-          _isLoading = false;
-        });
+      final result = await _authService.login(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
 
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (result['success']) {
         // Navigate to home screen after successful login
         if (mounted) {
           context.go('/home');
         }
-      });
+      } else {
+        // Show error message
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(result['error']),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
     }
   }
 
