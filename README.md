@@ -66,16 +66,7 @@
 
 A continuación, se muestran algunas vistas de la aplicación:
 
-<p align="center">
-
-![Pantalla principal](screenshots/img1.png)
-![Escaneo de recibo](screenshots/img2.png)
-![Impacto ambiental](screenshots/img3.png)
-![Recibos verdes](screenshots/img4.png)
-![Promociones ecológicas](screenshots/img5.png)
-![Historial de compras](screenshots/img6.png)
-
-</p>
+<p align="center"> <img src="screenshots/img1.png" width="220" alt="Pantalla principal" /> <img src="screenshots/img2.png" width="220" alt="Escaneo de recibo" /> <img src="screenshots/img3.png" width="220" alt="Impacto ambiental" /> <img src="screenshots/img4.png" width="220" alt="Recibos verdes" /> <img src="screenshots/img5.png" width="220" alt="Promociones ecológicas" /> <img src="screenshots/img6.png" width="220" alt="Historial de compras" /> </p>
 
 ###  🚧 Estado del proyecto
 
